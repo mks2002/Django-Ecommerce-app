@@ -1,0 +1,55 @@
+{% extends 'app/base.html' %} 
+{% load static %} 
+{% block title %} Mobiles {% endblock title %} 
+
+
+{% block main-content %}
+<div class="container my-5">
+  <div class="row">
+
+    <div class="col-sm-3">
+      <div class="list-group">
+        <a href="{% url 'mobile' %}" class="list-group-item list-group-item-action {% if request.path == '/mobile/' %} bg-primary text-white fw-bold {% endif %}" aria-current="true">All Mobile</a>
+        <a href="{% url 'mobiledata' 'Redmi'  %}" class="list-group-item list-group-item-action {% if request.path == '/mobile/Redmi' %} bg-primary text-white fw-bold {% endif %}" aria-current="true">Redmi</a>
+
+        <a href="{% url 'mobiledata' 'Samsung'  %}" class="list-group-item list-group-item-action {% if request.path == '/mobile/Samsung' %} bg-primary text-white fw-bold {% endif %}">Samsung</a>
+
+        <a href="{% url 'mobiledata' 'Apple'  %}" class="list-group-item list-group-item-action {% if request.path == '/mobile/Apple' %} bg-primary text-white fw-bold {% endif %}">I phones</a>
+        <a href="{% url 'mobiledata' 'below'  %}" class="list-group-item list-group-item-action {% if request.path == '/mobile/below' %} bg-primary text-white fw-bold {% endif %}">Below 10000</a>
+        <a href="{% url 'mobiledata' 'above'  %}" class="list-group-item list-group-item-action {% if request.path == '/mobile/above' %} bg-primary text-white fw-bold {% endif %}">Above 10000</a>
+      </div>
+    </div>
+
+    
+    
+    
+    
+    <div class="col-sm-9">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+        {% for product in mobiles %}
+        <div class="col-md-4 mb-4">
+          <div class="card border-primary custom-card" style="border-radius: 5px; border-width: 3px;">
+            <a href="{% url 'product-detail' product.id %}" class="btn">
+              <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top" height="300">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title fw-bold">{{product.title}}</h5>
+              <div class="card-text">
+                <p class="fw-bold">
+                  Rs. {{product.discounted_price}}
+                  <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock main-content %}

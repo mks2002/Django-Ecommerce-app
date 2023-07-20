@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!--Owl Carousel CSS-->
+  <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}" />
+
+  <!--FontAwesome CSS-->
+  <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}" />
+
+  <!--Custom CSS-->
+  <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
+
+  <title>SHoPPify | {% block title %} {% endblock title %}</title>
+</head>
+
+<body>
+  {% comment %} header section .... {% endcomment %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" style="height: 10vh">
+    <div class="container">
+      <a class="navbar-brand" href="/">SHoPPify</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">About</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'grocery' %}">Grocery</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="electronicsDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Electronics
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
+              <li>
+                <a class="dropdown-item {% if '/mobile/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'mobile' %}">Mobile</a>
+              </li>
+
+              <li><a class="dropdown-item {% if '/laptop/' in request.path %} bg-primary text-white fw-bold {% endif %}"  href="{% url 'laptop' %}">Laptop</a></li>
+
+              <li><a class="dropdown-item {% if '/tv/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'tv' %}">Television</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="fashionDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Fashion
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
+              <li>
+                <a class="dropdown-item {% if '/topwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'topwear' %}">Top Wear</a>
+              </li>
+              <li>
+                <a class="dropdown-item {% if '/bottomwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'bottomwear' %}">Bottom Wear</a>
+              </li>
+
+              <li><a class="dropdown-item  {% if '/cosmetic/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'cosmetic' %}">Cosmetics</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" id="fashionDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Other Items
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
+              <li><a class="dropdown-item  {% if '/sport/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'sport' %}">Sports</a></li>
+              <li><a class="dropdown-item {% if '/stationary/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'stationary' %}">Stationaries</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+        {% comment %} this is the form for the search currently not working .... {% endcomment %}
+
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+          <button class="btn btn-warning" type="submit">S</button>
+        </form>
+
+        <div>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if request.user.is_authenticated %}
+
+            <li class="nav-item dropdown mx-2">
+              <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                {{request.user.username|capfirst}}
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                <li>
+                  <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'orders' %}">Orders</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'passwordchange' %}">Change Password</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item mx-2">
+              <a href="{% url 'showcart' %}" class="nav-link text-white"><span
+                  class="badge bg-danger">{{totalitem}}</span> Cart
+              </a>
+            </li>
+
+            {% else %}
+
+            <li class="nav-item mx-2">
+              <a href="{% url 'login' %}" class="nav-link text-white">Login</a>
+            </li>
+            <li class="nav-item mx-2">
+              <a href="{% url 'customerregistration' %}" class="nav-link text-white">Registration</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <div class="mainbody">
+    {% block banner_slider %} {% endblock banner_slider %}
+    {% block livesale %} {% endblock livesale %}
+    {% block main-content %} {% endblock main-content %}
+    {% block payment-gateway %} {% endblock payment-gateway %}
+  </div>
+
+  <!-- Start Footer -->
+  <section id="footerID" class="footer_wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-5 footer_logo mb-4 mb-lg-0">
+          <!-- <img src="images/logo-white.png" alt=""> -->
+          <h2>SHoPPify</h2>
+          <p class="footer_text">
+            At Shoppify, we believe in the power of online shopping to transform lives. Our mission is to provide a seamless and enjoyable shopping experience for all our customers, where they can explore an extensive range of products from the comfort of their homes.
+          </p>
+        </div>
+
+        <div class="col-lg-4 px-lg-5 mb-4 mb-lg-0">
+          <h3 class="footer_title">Contact</h3>
+          <p class="footer_text">
+            <a href="#">info.services@hashtag.com</a><br />
+            <a href="#" class="footer-address">12 / 241 South <br />City, 123456, UK, COUNTRY</a>
+          </p>
+        </div>
+
+        <div class="col-lg-3 mb-4 mb-lg-0">
+          <h3 class="footer_title">Social Media</h3>
+          <p>
+            <a href="#" class="footer_social_media_icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="footer_social_media_icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="footer_social_media_icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="footer_social_media_icon"><i class="fab fa-dribbble"></i></a>
+          </p>
+          <h3 class="footer_title">payment accepted.</h3>
+          <img src="{% static 'app/images/payment.png' %}" alt="" srcset="" class="img-fluid" height="4px" />
+        </div>
+
+        <div class="col-12 footer_credits text-center">
+          <span>© 2021
+            <a href="#" target="_blank" title="Code4education">Mayuk_sarkar</a>™. All Rights Reserved.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Jquery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+    crossorigin="anonymous"></script>
+
+  <script src="{% static 'app/js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'app/js/all.min.js' %}"></script>
+  <script src="{% static 'app/js/myscript.js' %}"></script>
+</body>
+
+</html>

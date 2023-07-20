@@ -1,0 +1,249 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+
+{% block banner_slider %}
+
+
+
+<!--Banner Slider-->
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'app/images/banner/b1.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/b2.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/b3.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/b4.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </a>
+</div>
+
+
+{% endblock banner_slider %}
+
+
+
+{% block livesale %}
+<!-- Live Sale Section -->
+<div class="container">
+  <div class="row bg-danger text-center p-5 text-white border-bottom shadow">
+    <h1>SALE IS LIVE NOW</h1>
+    <span>5% Instant Discount on Axis Bank Credit and Debit Card</span>
+    <small class="fw-lighter">Term and Condition Applied (For details visit Bank's official Website)</small>
+  </div>
+</div>
+
+{% endblock livesale %}
+
+
+
+{% block main-content %}
+
+
+<!-- 1st Product Slider -->
+<div class="mx-3">
+  <h2 class="text-center">Great Deals: Most Affordable Products</h2>
+
+  <!-- Slider 1 -->
+  <div class="owl-carousel" id="slider1">
+
+    {% for lowprod in lowpriceprod %}
+    <div class="item">
+      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+        <a href="{% url 'product-detail' lowprod.id %}" class="btn">
+          <img src="{{lowprod.product_image.url}}" alt="" height="200" class="card-img-top">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title fw-bold">{{lowprod.title}}</h5>
+          <div class="card-text">
+            <p class="fw-bold">
+              Rs. {{lowprod.discounted_price}}
+              <small class="fw-light text-decoration-line-through">{{lowprod.selling_price}}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<hr class="container my-2">
+
+<!-- 2nd Product Slider -->
+
+<div class="mx-3">
+  <h2 class="text-center">Luxury Collection: Our Most Expensive Products</h2>
+
+  <!-- Slider 2 -->
+  <div class="owl-carousel" id="slider2">
+    {% for highprod in highpriceprod %}
+    <div class="item">
+      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+        <a href="{% url 'product-detail' highprod.id %}" class="btn">
+          <img src="{{highprod.product_image.url}}" alt="" height="200" class="card-img-top">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title fw-bold">{{highprod.title}}</h5>
+          <div class="card-text">
+            <p class="fw-bold">
+              Rs. {{highprod.discounted_price}}
+              <small class="fw-light text-decoration-line-through">{{highprod.selling_price}}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+
+<hr class="container-fluid">
+
+<!-- Payment Info Section -->
+<div class="container-fluid my-5">
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="card mb-3" style="border-radius: 5px; border: 3px solid #007bff; transition: transform 0.3s;">
+        <div class="card-body">
+          <img src="{% static 'app/images/payavail/cc.jpg' %}" alt="" srcset="" class="img-fluid"
+            style="height: 150px; object-fit: contain;">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card mb-3" style="border-radius: 5px; border: 3px solid #007bff; transition: transform 0.3s;">
+        <div class="card-body">
+          <img src="{% static 'app/images/payavail/upi.jpg' %}" alt="" srcset="" class="img-fluid"
+            style="height: 150px; object-fit: contain;">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card mb-3" style="border-radius: 5px; border: 3px solid #007bff; transition: transform 0.3s;">
+        <div class="card-body">
+          <img src="{% static 'app/images/payavail/nb.jpg' %}" alt="" srcset="" class="img-fluid"
+            style="height: 150px; object-fit: contain;">
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      <div class="card mb-3" style="border-radius: 5px; border: 3px solid #007bff; transition: transform 0.3s;">
+        <div class="card-body">
+          <img src="{% static 'app/images/payavail/bj.jpg' %}" alt="" srcset="" class="img-fluid"
+            style="height: 150px; object-fit: contain;">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="container-fluid ">
+
+<!-- 3rd Product Slider -->
+<div class="m-3">
+  <h2 class="text-center">ShoPPify Bottom Wear</h2>
+
+  <!-- Slider 3 -->
+  <div class="owl-carousel" id="slider3">
+    {% for b in bottomwears %}
+    <div class="item">
+      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+        <a href="{% url 'product-detail' b.id %}" class="btn">
+          <img src="{{b.product_image.url}}" alt="" height="200" class="card-img-top">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title fw-bold">{{b.title}}</h5>
+          <div class="card-text">
+            <p class="fw-bold">
+              Rs. {{b.discounted_price}}
+              <small class="fw-light text-decoration-line-through">{{b.selling_price}}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+<!-- End 3rd Product Slider -->
+
+<hr class="container my-2">
+
+
+<!-- 4th Product Slider -->
+<div class="mx-3">
+  <h2 class="text-center">ShoPPify Top Wear</h2>
+
+  <!-- Slider 4 -->
+  <div class="owl-carousel" id="slider4">
+    {% for tp in topwears %}
+    <div class="item">
+      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+        <a href="{% url 'product-detail' tp.id %}" class="btn">
+          <img src="{{tp.product_image.url}}" alt="" height="200" class="card-img-top">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title fw-bold">{{tp.title}}</h5>
+          <div class="card-text">
+            <p class="fw-bold">
+              Rs. {{tp.discounted_price}}
+              <small class="fw-light text-decoration-line-through">{{tp.selling_price}}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<hr class="container my-2">
+
+
+<!-- 5th Product Slider -->
+<div class="mx-3">
+  <h2 class="text-center">ShoPPify Grocery Items</h2>
+  <!-- Slider 5 -->
+  <div class="owl-carousel" id="slider5">
+    {% for item in grocery %}
+    <div class="item">
+      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+        <a href="{% url 'product-detail' item.id %}" class="btn">
+          <img src="{{item.product_image.url}}" alt="" height="200" class="card-img-top">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title fw-bold">{{item.title}}</h5>
+          <div class="card-text">
+            <p class="fw-bold">
+              Rs. {{item.discounted_price}}
+              <small class="fw-light text-decoration-line-through">{{item.selling_price}}</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock main-content %}

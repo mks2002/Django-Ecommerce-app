@@ -1,0 +1,72 @@
+{% extends 'app/base.html' %} 
+{% load static %} 
+{% block title %} Laptops {% endblock title %} 
+
+
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+
+        <div class="col-sm-3">
+            <div class="list-group">
+                <a href="{% url 'laptop' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">All Laptops</a>
+
+                <a href="{% url 'laptopdata' 'HP'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/HP' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">HP Laptops</a>
+
+                <a href="{% url 'laptopdata' 'Dell'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Dell' %} bg-primary text-white fw-bold {% endif %}">Dell Laptops</a>
+
+                <a href="{% url 'laptopdata' 'Asus'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Asus' %} bg-primary text-white fw-bold {% endif %}">Asus Laptops</a>
+
+                <a href="{% url 'laptopdata' 'Lenovo'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Lenovo' %} bg-primary text-white fw-bold {% endif %}">Lenovo Laptops</a>
+
+                <a href="{% url 'laptopdata' 'below'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/below' %} bg-primary text-white fw-bold {% endif %}">Below
+                    40000 Rs </a>
+                <a href="{% url 'laptopdata' 'above'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/above' %} bg-primary text-white fw-bold {% endif %}">Above
+                    40000 Rs</a>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="col-sm-9">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                {% for product in laptop %}
+                <div class="col-md-4 mb-4">
+                    <div class="card border-primary custom-card" style="border-radius: 5px; border-width: 3px;">
+                        <a href="{% url 'product-detail' product.id %}" class="btn">
+                            <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top"
+                                height="300">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">{{product.title}}</h5>
+                            <div class="card-text">
+                                <p class="fw-bold">
+                                    Rs. {{product.discounted_price}}
+                                    <small
+                                        class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock main-content %}

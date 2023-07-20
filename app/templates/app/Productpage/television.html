@@ -1,0 +1,70 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %} Televisions {% endblock title %}
+
+
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+
+        <div class="col-sm-3">
+            <div class="list-group">
+                <a href="{% url 'tv' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/tv/' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">All TV's</a>
+
+                <a href="{% url 'tvdata' 'Panasonic'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/tv/Panasonic' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">Panasonic Tv's</a>
+
+                <a href="{% url 'tvdata' 'Samsung'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/tv/Samsung' %} bg-primary text-white fw-bold {% endif %}">Samsung
+                    Tv's</a>
+
+                <a href="{% url 'tvdata' 'Sony'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/tv/Sony' %} bg-primary text-white fw-bold {% endif %}">Sony
+                    Tv's</a>
+
+
+                <a href="{% url 'tvdata' 'below'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/tv/below' %} bg-primary text-white fw-bold {% endif %}">Below
+                    15000 Rs </a>
+                <a href="{% url 'tvdata' 'above'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/tv/above' %} bg-primary text-white fw-bold {% endif %}">Above
+                    15000 Rs</a>
+            </div>
+        </div>
+
+
+
+        <div class="col-sm-9">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                {% for product in tv %}
+                <div class="col-md-4 mb-4">
+                    <div class="card border-primary custom-card" style="border-radius: 5px; border-width: 3px;">
+                        <a href="{% url 'product-detail' product.id %}" class="btn">
+                            <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top"
+                                height="300">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">{{product.title}}</h5>
+                            <div class="card-text">
+                                <p class="fw-bold">
+                                    Rs. {{product.discounted_price}}
+                                    <small
+                                        class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock main-content %}

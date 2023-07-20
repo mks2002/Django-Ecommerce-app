@@ -1,0 +1,54 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %} Topwear {% endblock title %}
+
+{% block main-content %}
+<div class="container my-5">
+  <div class="row">
+
+    <div class="col-sm-3">
+      <div class="list-group">
+        <a href="{% url 'topwear' %}"
+          class="list-group-item list-group-item-action {% if request.path == '/topwear/' %} bg-primary text-white fw-bold {% endif %}">All
+          topwear</a>
+
+        <a href="{% url 'topweardata' 'Safira'  %}"
+          class="list-group-item list-group-item-action  {% if request.path == '/topwear/Safira' %} bg-primary text-white fw-bold {% endif %}">Safira</a>
+
+        <a href="{% url 'topweardata' 'Bajaj'  %}"
+          class="list-group-item list-group-item-action  {% if request.path == '/topwear/Bajaj' %} bg-primary text-white fw-bold {% endif %}">Bajaj</a>
+        <a href="{% url 'topweardata' 'below'  %}"
+          class="list-group-item list-group-item-action  {% if request.path == '/topwear/below' %} bg-primary text-white fw-bold {% endif %}">Below
+          400</a>
+        <a href="{% url 'topweardata' 'above'  %}"
+          class="list-group-item list-group-item-action  {% if request.path == '/topwear/above' %} bg-primary text-white fw-bold {% endif %}">Above
+          400</a>
+      </div>
+    </div>
+
+    <div class="col-sm-9">
+      <div class="row">
+        {% for product in topwears %}
+        <div class="col-md-4 mb-4">
+          <div class="card border-primary custom-card" style="border-radius: 5px; border-width: 3px;">
+            <a href="{% url 'product-detail' product.id %}" class="btn">
+              <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top" height="300">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title fw-bold">{{product.title}}</h5>
+              <div class="card-text">
+                <p class="fw-bold">
+                  Rs. {{product.discounted_price}}
+                  <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock main-content %}
