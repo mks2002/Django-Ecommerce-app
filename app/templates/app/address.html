@@ -1,4 +1,4 @@
-{% extends 'app/base.html' %} 
+{% extends 'app/base.html' %}
 {% load static %}
 {% block title %}Address{% endblock title %}
 {% block main-content %}
@@ -16,9 +16,14 @@
             </li>
          </ul>
       </div>
-      
+
       <div class="col-sm-9 offset-sm-1">
          <div class="row">
+            {% if messages %}
+            {% for message in messages %}
+            <p {% if message.tags %} class="alert alert-{{ message.tags }} fw-bold mb-5" {% endif %}>{{ message }}</p>
+            {% endfor %}
+            {% endif %}
 
             {% for ad in add %}
             <div class="col-sm-6">
@@ -36,7 +41,7 @@
             {% empty %}
             <h3 class="text-center fw-bold">You are not adding any address yet...</h3>
             {% endfor %}
-            
+
          </div>
       </div>
    </div>

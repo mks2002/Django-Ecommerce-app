@@ -1,6 +1,8 @@
+from django.contrib import messages
+import re
 from django import forms
 from django.contrib.auth.forms import (
-    UserCreationForm,       
+    UserCreationForm,
     AuthenticationForm,
     PasswordChangeForm,
     UsernameField,
@@ -15,9 +17,9 @@ from .models import Customer
 from django.contrib.auth import password_validation
 
 
-
 # here we create our custom user registration form.......
 class CustomerRegistrationForm(UserCreationForm):
+    # this fields are directly related to the UserCreationForm so for changing them we have to write here, inside meta we can update only those fields which are related to the model class ....
     password1 = forms.CharField(
         label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
@@ -37,13 +39,17 @@ class CustomerRegistrationForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
         labels = {'email': 'Email'}
-        widgets = {'username': forms.TextInput(attrs={'class': 'form-control'})}
+        widgets = {'username': forms.TextInput(
+            attrs={'class': 'form-control'})}
 
 
 # this is our custom loginform we use this so that we can modify this using bootstrap class........
+
+
 class LoginForm(AuthenticationForm):
     username = UsernameField(
-        widget=forms.TextInput(attrs={'autofocus': True, 'class': 'form-control'})
+        widget=forms.TextInput(
+            attrs={'autofocus': True, 'class': 'form-control'})
     )
     password = forms.CharField(
         label=_('Password'),
@@ -52,11 +58,17 @@ class LoginForm(AuthenticationForm):
             attrs={'autocomplete': 'current-password', 'class': 'form-control'}
         ),
     )
-# So, if the code is used in a multilingual website or application, the password label can be easily translated to different languages by simply translating the corresponding strings in the translation files....  
+
+    # this function is used for showing notification to user when he is logged in succesfully .....
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'You have successfully logged in, If you not complete your profile by adding your address ! ')
+        return response
+
+
+# So, if the code is used in a multilingual website or application, the password label can be easily translated to different languages by simply translating the corresponding strings in the translation files....
 # for using that we have to import ----->
 # from django.utils.translation import gettext, gettext_lazy as _
-
-
 
 
 # this is the custom password change form using the old password.......
@@ -89,6 +101,8 @@ class MyPasswordChangeForm(PasswordChangeForm):
     )
 
 # this view is for forgot password here use have to submit his email then a link for updating password is send to the email and then it is done.....
+
+
 class MyPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(
         label=_('Email'),
@@ -99,6 +113,8 @@ class MyPasswordResetForm(PasswordResetForm):
     )
 
 # after the link is generated from the previous form then this form is render to update the new password.......
+
+
 class MySetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(
         label=_('New Password'),
@@ -117,9 +133,10 @@ class MySetPasswordForm(SetPasswordForm):
     )
 
 
-
 # this form is for saving the different customer data which is corresponding to one user of the website and this form is remder when the user is just logged in ......
 # this is a complete model form here we dont use any default form of django....
+
+
 class CustomerProfileForm(forms.ModelForm):
     class Meta:
         model = Customer
@@ -131,3 +148,22 @@ class CustomerProfileForm(forms.ModelForm):
             'state': forms.Select(attrs={'class': 'form-control'}),
             'zipcode': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        city = cleaned_data.get('city')
+        zipcode = cleaned_data.get('zipcode')
+
+        if name and not re.match(r'^[A-Za-z\s]+$', name):
+            raise forms.ValidationError(
+                'Name can only contain letters and spaces.')
+
+        if city and not re.match(r'\w+(\s\w+)*', city):
+            raise forms.ValidationError(
+                'City can only contain letters and spaces.')
+
+        if zipcode and not str(zipcode).isdigit():
+            raise forms.ValidationError("Zip code can only contain numbers.")
+        if zipcode and len(str(zipcode)) != 6:
+            raise forms.ValidationError("Zip code must be exactly 6 digits.")

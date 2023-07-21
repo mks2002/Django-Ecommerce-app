@@ -72,7 +72,10 @@ a:focus {
    font-size: 18px;
    font-weight: 600;
    margin-right: 15px;
+   
 }
+
+
 
 /* css for cards in home page ..... */
 
@@ -119,6 +122,7 @@ a:focus {
 .mainbody {
    padding-top: 10vh !important;
    min-height: 48vh !important;
+   background-color: white!important;
 }
 
 .demo{

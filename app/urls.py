@@ -38,6 +38,7 @@ urlpatterns = [
 
 
     path('checkout/', views.checkout, name='checkout'),
+    
     path('address/', views.address, name='address'),
 
     path('orders/', views.orders, name='orders'),
@@ -64,7 +65,7 @@ urlpatterns = [
 
     path('cosmetic/', views.cosmetic, name='cosmetic'),
     path('cosmetic/<slug:data>', views.cosmetic, name='cosmeticdata'),
-    
+
     path('sport/', views.sports, name='sport'),
     path('sport/<slug:data>', views.sports, name='sportdata'),
 
@@ -83,10 +84,11 @@ urlpatterns = [
     ),
 
     # here we directly use the url for the login view we dont crate any other view for this authentication....
+    # if we use the nextpage option directly here in the url then we can override the value of LOGIN_REDIRECT_URL = '/profile/' which is defined in the settings.py file....
     path(
         'accounts/login/',
         auth_views.LoginView.as_view(
-            template_name='app/login.html', authentication_form=LoginForm
+            template_name='app/login.html', authentication_form=LoginForm, next_page='home',
         ),
         name='login',
     ),
@@ -161,3 +163,4 @@ if settings.DEBUG:
 
 
 # in the password reset url when the form for email come if user enter that email which he use during registration then only the reset password link generate and send to his email if enters any other email then it is not working.....
+

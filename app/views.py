@@ -5,6 +5,7 @@ from .models import Customer, Product, Cart, OrderPlaced
 from .forms import CustomerRegistrationForm, CustomerProfileForm
 
 from django.views import View
+from django.views.decorators.cache import never_cache
 
 from django.http import JsonResponse
 from django.db.models import Q
@@ -15,7 +16,7 @@ from django.utils.decorators import method_decorator
 
 from django.db.models import OuterRef, Subquery
 
-
+method_decorator(login_required)
 class ProductView(View):
     def get(self, request):
         totalitem = 0
@@ -45,6 +46,7 @@ class ProductView(View):
             id__in=Subquery(most_expensive_products.values('id'))
         ).order_by('?')
 
+        # this is only vailed for logged in users , so that they can see how many orders are in their carts ....
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
         return render(
@@ -71,9 +73,7 @@ class ProductDetailView(View):
         item_already_in_cart = False
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
-            item_already_in_cart = Cart.objects.filter(
-                Q(product=product.id) & Q(user=request.user)
-            ).exists()
+            item_already_in_cart = Cart.objects.filter( Q(product=product.id) & Q(user=request.user) ).exists()
         return render(
             request,
             'app/productdetail.html',
@@ -92,26 +92,23 @@ class ProductDetailView(View):
 def add_to_cart(request):
     user = request.user
     item_already_in_cart1 = False
-    product = request.GET.get('prod_id')
+    product_id = request.GET.get('prod_id')
     # if item already in cart then it become true.....
-    item_already_in_cart1 = Cart.objects.filter(
-        Q(product=product) & Q(user=request.user)
-    ).exists()
+    item_already_in_cart1 = Cart.objects.filter(  Q(product=product_id) & Q(user=request.user) ).exists()
     if item_already_in_cart1 == False:
-        product_title = Product.objects.get(id=product)
-        # since in cart table product is a foreign key we have to provide the entire product instance in place of that field and from there django model automatically save the product_id in the corresponding column but we have to provide the entire product instance if we directly provide the product_no in that column then it gives error....
-        Cart(user=user, product=product_title).save()
+        product_data = Product.objects.get(id=product_id)
+        
+        Cart(user=user, product=product_data).save()
         messages.success(request, 'Product Added to Cart Successfully !!')
         return redirect('/cart')
     else:
         return redirect('/cart')
+# since in cart table product is a foreign key we have to provide the entire product instance, which is stored in product_data, in place of that field and from there django model automatically save the product_id in the corresponding column but we have to provide the entire product instance if we directly provide the product_id in that column then it gives error......
 
-
-# Below Code is used to return to same page
-# return redirect(request.META['HTTP_REFERER'])
 
 
 @login_required
+@never_cache
 def show_cart(request):
     totalitem = 0
     if request.user.is_authenticated:
@@ -121,8 +118,7 @@ def show_cart(request):
         amount = 0.0
         shipping_amount = 70.0
         totalamount = 0.0
-        cart_product = [p for p in Cart.objects.all() if p.user ==
-                        request.user]
+        cart_product = [p for p in Cart.objects.all() if p.user == request.user]
         print(cart_product)
         if cart_product:
             for p in cart_product:
@@ -144,6 +140,11 @@ def show_cart(request):
     else:
         # return render(request, 'app/emptycart.html', {'totalitem': totalitem})
         return HttpResponseRedirect('/accounts/login/')
+        # pass
+
+# we have 2 options here either we can use empty card rendering with only no_cache decorator , then if the user is not logged in then it shows the empty cart for that user , or we have another option that we can use login_required and never_cache both then automatically if the unautherized user try to access this page he redirect to the login page , in such case the return HttpResponseRedirect('/accounts/login/') is not so important just simply a pass statement is enough because the main function of login_required decorator is to send unauthorized users to the login page if they try to aceess protected route and after successfully login , send to their destination url , but still we use that HttpResponseRedirect('/accounts/login') condition for more better readibilty of code ......
+
+# import thing is that if we not use the login_required decorator and use only pass condtion in the else case and try to access this url for unauthorized user then it will give error that --> views.show_cart didn't return an HttpResponse object. It returned None instead....
 
 
 def plus_cart(request):
@@ -154,8 +155,7 @@ def plus_cart(request):
         c.save()
         amount = 0.0
         shipping_amount = 70.0
-        cart_product = [p for p in Cart.objects.all() if p.user ==
-                        request.user]
+        cart_product = [p for p in Cart.objects.all() if p.user ==  request.user]
         for p in cart_product:
             tempamount = p.quantity * p.product.discounted_price
             # print('Quantity', p.quantity)
@@ -227,28 +227,55 @@ def remove_cart(request):
 # ________________________________________________________________________________________________________________
 # this  are related to payment method.....
 
+import re
+
 
 @login_required
 def checkout(request):
+    totalitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
     user = request.user
-    add = Customer.objects.filter(user=user)
+    address = Customer.objects.filter(user=user)
+    prevpage = request.GET.get('page')
+    # print(prevpage)
     cart_items = Cart.objects.filter(user=request.user)
-    amount = 0.0
+    # print(cart_items)
+    flag = True
+    totalamount = 0
     shipping_amount = 70.0
-    totalamount = 0.0
-    cart_product = [p for p in Cart.objects.all() if p.user == request.user]
-    if cart_product:
-        for p in cart_product:
-            tempamount = p.quantity * p.product.discounted_price
-            amount += tempamount
-        totalamount = amount + shipping_amount
-    return render(
-        request,
-        'app/checkout.html',
-        {'add': add, 'cart_items': cart_items, 'totalcost': totalamount},
-    )
+    if prevpage.lower() == 'cardpage':
+        amount = 0.0
+        totalamount = 0.0
+        cart_product = [p for p in Cart.objects.all() if p.user ==
+                        request.user]
+        if cart_product:
+            for p in cart_product:
+                tempamount = p.quantity * p.product.discounted_price
+                amount += tempamount
+            totalamount = amount + shipping_amount
+    else:
+        match = re.search(r'\d+', prevpage)
+        if match:
+            number = match.group()
+            print(number)
+            cart_items = Product.objects.filter(id=number)
+            if cart_items:
+                totalamount = cart_items[0].discounted_price+shipping_amount
+                # print(cart_items)
+                # print(totalamount)
+                flag = False
+            else:
+                pass
+
+    return render(request, 'app/checkout.html',
+                  {'address': address, 'cart_items': cart_items,
+                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag},
+                  )
 
 
+
+# when we done payments for some products from our card we have to delete them from cards and save it into order table ...
 @login_required
 def payment_done(request):
     custid = request.GET.get('custid')
@@ -258,9 +285,8 @@ def payment_done(request):
     customer = Customer.objects.get(id=custid)
     print(customer)
     for cid in cartid:
-        OrderPlaced(
-            user=user, customer=customer, product=cid.product, quantity=cid.quantity
-        ).save()
+        OrderPlaced(user=user, customer=customer,
+                    product=cid.product, quantity=cid.quantity).save()
         print('Order Saved')
         cid.delete()
         print('Cart Item Deleted')
@@ -465,7 +491,8 @@ def bottomwear(request, data=None):
         {'bottomwears': bottomwears, 'totalitem': totalitem},
     )
 
-# _________________________________________________________________________________________________________________________________
+# ________________________________________________________________________________________________________________
+
 # this entire section is for customer registration login and authentication........
 
 # this is for customer registration view.......
@@ -503,19 +530,15 @@ def address(request):
 
 
 # this is for showing the user his profile......
+
 @method_decorator(login_required, name='dispatch')
 class ProfileView(View):
-
     def get(self, request):
         totalitem = 0
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
         form = CustomerProfileForm()
-        return render(
-            request,
-            'app/profile.html',
-            {'form': form,  'totalitem': totalitem},
-        )
+        return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
 
     def post(self, request):
         totalitem = 0
@@ -529,23 +552,19 @@ class ProfileView(View):
             city = form.cleaned_data['city']
             state = form.cleaned_data['state']
             zipcode = form.cleaned_data['zipcode']
-            reg = Customer(
-                user=usr,
-                name=name,
-                locality=locality,
-                city=city,
-                state=state,
-                zipcode=zipcode,
-            )
-            reg.save()
-            form = CustomerProfileForm()
-            messages.success(
-                request, 'Congratulations!! Profile Updated Successfully.')
-        return render(
-            request,
-            'app/profile.html',
-            {'form': form,  'totalitem': totalitem},
-        )
+            if (Customer.objects.filter(user=usr, name=name).exists() | Customer.objects.filter(user=usr, locality=locality).exists()):
+                messages.warning(
+                    request, 'You already have an account with the same username or locality. Please select another!')
+                return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
+            else:
+                reg = Customer(user=usr, name=name, locality=locality,
+                               city=city, state=state, zipcode=zipcode)
+                reg.save()
+                messages.success(
+                    request, 'Congratulations!! Profile Updated Successfully.')
+                return HttpResponseRedirect('/address/')
+        else:
+            return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
 
 
 # all of the pages which are shown after login in that we have to send the totalitem value so that in the cart option user can see how many items he added into carts.....
