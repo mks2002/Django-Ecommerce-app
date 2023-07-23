@@ -12,7 +12,7 @@
 
     {% if messages %}
     {% for message in messages %}
-     <p {% if message.tags %} class="alert alert-{{message.tags}} mb-5" {% endif %}>{{message}}</p>
+     <p {% if message.tags %} class="alert alert-{{message.tags}} fw-bold mb-5" {% endif %}>{{message}}</p>
     {% endfor %}
     {% endif %}
 
@@ -20,7 +20,7 @@
 
      {% for fm in form %}
       <div class="form-group mb-3">
-      {{fm.label_tag}} {{fm}} <small class="text-danger">{{fm.errors|striptags}}</small>
+      {{fm.label_tag}} {{fm}} <small class="text-danger fw-bold">{{fm.errors|striptags}}</small>
       </div>
      {% endfor %}
 
@@ -29,7 +29,7 @@
      
      {% if form.non_field_errors %}
       {% for error in form.non_field_errors %}
-       <p class="alert alert-danger my-3">{{error}}</p>
+       <p class="alert alert-danger my-3 fw-bold">{{error}}</p>
       {% endfor %}
      {% endif %}
      <div class="text-center text-primary fw-bold"><small>Existing User ? <a href="{% url 'login' %}" class="text-danger">Login Now</a> </small></div>

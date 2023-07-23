@@ -9,15 +9,15 @@
     <div class="col-sm-3">
       <div class="list-group">
 
-        {% comment %} The aria-current attribute is an accessibility feature used to help people with disabilities, especially those using screen readers, understand the current state of a link. {% endcomment %}
+        {% comment %} The aria-current attribute is an accessibility feature used to help people with disabilities,
+        especially those using screen readers, understand the current state of a link. {% endcomment %}
 
         <a href="{% url 'bottomwear' %}"
-          class="list-group-item list-group-item-action {% if request.path == '/bottomwear/' %} bg-primary text-white fw-bold {% endif %}"
-          >All bottomwear</a>
+          class="list-group-item list-group-item-action {% if request.path == '/bottomwear/' %} bg-primary text-white fw-bold {% endif %}">All
+          bottomwear</a>
 
         <a href="{% url 'bottomweardata' 'Spykar'  %}"
-          class="list-group-item list-group-item-action  {% if request.path == '/bottomwear/Spykar' %} bg-primary text-white fw-bold {% endif %}"
-          >Spykar</a>
+          class="list-group-item list-group-item-action  {% if request.path == '/bottomwear/Spykar' %} bg-primary text-white fw-bold {% endif %}">Spykar</a>
 
         <a href="{% url 'bottomweardata' 'Lee'  %}"
           class="list-group-item list-group-item-action {% if request.path == '/bottomwear/Lee' %} bg-primary text-white fw-bold {% endif %}">Lee</a>

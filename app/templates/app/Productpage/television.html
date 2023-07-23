@@ -25,7 +25,6 @@
                     class="list-group-item list-group-item-action {% if request.path == '/tv/Sony' %} bg-primary text-white fw-bold {% endif %}">Sony
                     Tv's</a>
 
-
                 <a href="{% url 'tvdata' 'below'  %}"
                     class="list-group-item list-group-item-action {% if request.path == '/tv/below' %} bg-primary text-white fw-bold {% endif %}">Below
                     15000 Rs </a>
@@ -52,8 +51,9 @@
                             <div class="card-text">
                                 <p class="fw-bold">
                                     Rs. {{product.discounted_price}}
-                                    <small
-                                        class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                                    <small class="fw-light text-decoration-line-through">
+                                        {{product.selling_price}}
+                                    </small>
                                 </p>
                             </div>
                         </div>

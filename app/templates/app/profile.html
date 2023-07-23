@@ -24,13 +24,13 @@
     <div class="col-sm-2 border-end">
       <ul class="list-unstyled text-left">
         <li class="d-grid"><a href="{% url 'profile' %}"
-            class="btn {% if request.path == '/profile/' %}btn-primary{% endif %}">Profile</a></li>
+            class="btn {% if request.path == '/profile/' %}btn-primary fw-bold {% endif %}">Profile</a></li>
         <li class="d-grid"><a href="{% url 'address' %}"
-            class="btn {% if request.path == '/address/' %}btn-primary{% endif %}">Address</a></li>
+            class="btn {% if request.path == '/address/' %}btn-primary fw-bold{% endif %}">Address</a></li>
         <li class="d-grid"><a href="{% url 'showcart' %}"
-            class="btn {% if request.path == '/cart/' %}btn-primary{% endif %}">Cart Items</a></li>
+            class="btn {% if request.path == '/cart/' %}btn-primary fw-bold {% endif %}">Cart Items</a></li>
         <li class="d-grid"><a href="{% url 'orders' %}"
-            class="btn {% if request.path == '/orders/' %}btn-primary{% endif %}">Your Orders</a></li>
+            class="btn {% if request.path == '/orders/' %}btn-primary fw-bold{% endif %}">Your Orders</a></li>
 
       </ul>
     </div>

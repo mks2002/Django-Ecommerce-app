@@ -1,76 +1,101 @@
 {% extends 'app/base.html' %}
- {% load static %}
+{% load static %}
+{% load firstcustomFilter %}
 {% block title %}Orders{% endblock title %}
 
 {% block main-content %}
 
 <div class="container my-5">
   <div class="row">
-    <h3>Welcome {{uname}}</h3>
+    {% if messages %}
+    {% for message in messages %}
 
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+      <strong class="ms-4">{{ message }}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+   
+    {% endfor %}
+    {% endif %}
+
+    <h3>Welcome <span class="text-capitalize">{{request.user}}</span> </h3>
     <div class="col-sm-2 border-end">
       <ul class="list-unstyled text-left">
-        <li class="d-grid"><a href="{% url 'profile' %}" class="btn {% if request.path == '/profile/' %}btn-primary{% endif %}">Profile</a></li>
-        <li class="d-grid"><a href="{% url 'address' %}" class="btn {% if request.path == '/address/' %}btn-primary{% endif %}">Address</a></li>
-        <li class="d-grid"><a href="{% url 'showcart' %}" class="btn {% if request.path == '/cart/' %}btn-primary{% endif %}">Cart Items</a></li>
-
-        <li class="d-grid"><a href="{% url 'orders' %}" class="btn {% if request.path == '/orders/' %}btn-primary{% endif %}">Your Orders</a></li>
+        <li class="d-grid"><a href="{% url 'profile' %}"
+            class="btn {% if request.path == '/profile/' %}btn-primary fw-bold {% endif %}">Profile</a></li>
+        <li class="d-grid"><a href="{% url 'address' %}"
+            class="btn {% if request.path == '/address/' %}btn-primary fw-bold{% endif %}">Address</a></li>
+        <li class="d-grid"><a href="{% url 'showcart' %}"
+            class="btn {% if request.path == '/cart/' %}btn-primary fw-bold {% endif %}">Cart Items</a></li>
+        <li class="d-grid"><a href="{% url 'orders' %}"
+            class="btn {% if request.path == '/orders/' %}btn-primary fw-bold{% endif %}">Your Orders</a></li>
 
       </ul>
     </div>
 
-    
+
 
     <div class="col-sm-9 offset-sm-1">
-      
+
       {% for op in order_placed %}
 
-      <div class="row shadow-sm mb-3">
-        <div class="col-sm-2">
-          <img src="{{op.product.product_image.url}}" alt="" srcset="" class="img-fluid" height="150" width="150" />
+      <div class="container"> <!-- Increase the min-height value as desired -->
+        <div class="row shadow-sm mb-3 border border-primary" style="border-radius: 8px; min-height: 150px;">
+          <div class="col-sm-2 d-flex align-items-center justify-content-center">
+            <img src="{{ op.product.product_image.url }}" alt="" srcset="" class="img-fluid" height="90%" width="150"
+              style="border-radius: 8px;" />
+          </div>
+          <div class="col-sm-7 d-flex align-items-center">
+            <div>
+              <p class="fw-bold" style="color: #007bff;">Product: {{ op.product.title }}</p>
+              <p class="mb-1 fw-bold">Quantity: {{ op.quantity }}</p>
+              <p class="fw-bold">Price: {{ op.total_cost }}</p>
+              <!-- totalamount= quant* single price + 70 -->
+              <p class="fw-bold">Total amount: {{ op.total_cost|multiply:op.quantity |add:70 }}</p>
+            </div>
+          </div>
+          <div class="col-sm-3 d-flex align-items-center justify-content-center">
+            <div>
+              <p class="fw-bold" style="color: #007bff;">Order Status: {{ op.status }}</p>
+              {% if op.status == 'Accepted' %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 20%; border-radius: 8px;"
+                  aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% endif %}
+              {% if op.status == 'Packed' %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 40%; border-radius: 8px;"
+                  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% endif %}
+              {% if op.status == 'On The Way' %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: 70%; border-radius: 8px;"
+                  aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% endif %}
+              {% if op.status == 'Delivered' %}
+              <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 100%; border-radius: 8px;"
+                  aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
         </div>
-        <div class="col-sm-7">
-          <p>Product: {{op.product.title}}</p>
-          <p>Quantity: {{op.quantity}}</p>
-          <p>Price: {{op.total_cost}}</p>
-        </div>
-        <div class="col-sm-3 fw-bold">
-          <p>Order Status: {{op.status}}</p>
-          {% if op.status == 'Accepted' %}
-          <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-          {% endif %}
-          {% if op.status == 'Packed' %}
-          <div class="progress">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-          {% endif %}
-          {% if op.status == 'On The Way' %}
-          <div class="progress">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 70%" aria-valuenow="70"
-              aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          {% endif %}
-          {% if op.status == 'Delivered' %}
-          <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100"
-              aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          {% endif %}
-        </div>
+
       </div>
+
 
       {% empty %}
       <h3 class="text-center fw-bold">You are not placed any orders yet...</h3>
       {% endfor %}
     </div>
-    
+
 
   </div>
- 
+
 
 </div>
 

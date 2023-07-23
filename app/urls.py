@@ -1,5 +1,7 @@
 from django.urls import path
 from app import views
+
+# this 2 import is for dealing with media files....
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -27,7 +29,8 @@ urlpatterns = [
         name='product-detail',
     ),
 
-    # this 2 are for saving into the card page....
+
+    # the first url is just for saving the product into the cart table and then it redirect to the 2nd url which will show all the carts product of a particular user ....
     path('add-to-cart/', views.add_to_cart, name='add-to-cart'),
     path('cart/', views.show_cart, name='showcart'),
 
@@ -36,13 +39,26 @@ urlpatterns = [
     path('minuscart/', views.minus_cart),
     path('removecart/', views.remove_cart),
 
+    # about us page ...
+    path("about/", views.aboutpage, name='about'),
 
+    #  this is for checkout page before doing the payment ...
     path('checkout/', views.checkout, name='checkout'),
-    
-    path('address/', views.address, name='address'),
 
-    path('orders/', views.orders, name='orders'),
+    # this is for just saving the data into order table and delete from cart table during payment, payment is done by paypal upi ...
     path('paymentdone/', views.payment_done, name='paymentdone'),
+
+    # direct payment for product without saving it into cart ...
+    path('directpayment/',views.directpayment, name='directpayment'),
+
+    # this is just for displaying all the orders of a particular user ...
+    path('orders/', views.orders, name='orders'),
+
+
+    # this 2 are for showing the adress and profile page to currently logged in user ...
+    path('address/', views.address, name='address'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+
 
     # from here we started all our product pages ....
     path('grocery/', views.grocery, name='grocery'),
@@ -74,8 +90,6 @@ urlpatterns = [
 
 
 
-
-
     # for registration we use our custom view class......
     path(
         'registration/',
@@ -97,7 +111,7 @@ urlpatterns = [
     # here we have to pass this nextpage option to say this after logout where it should go otherwise by default it sends to admin logout page....
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     # path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    path('profile/', views.ProfileView.as_view(), name='profile'),
+
 
     # this is password change using old password for this also we dont need to make views we directly use default urls provided by django.......
     path(
@@ -163,4 +177,3 @@ if settings.DEBUG:
 
 
 # in the password reset url when the form for email come if user enter that email which he use during registration then only the reset password link generate and send to his email if enters any other email then it is not working.....
-

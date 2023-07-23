@@ -4,46 +4,61 @@
 {% block main-content %}
 
 <div class="container my-5">
-   <div class="row">
-      <h3>Welcome <span class="text-capitalize">{{request.user}}</span></h3>
-      <div class="col-sm-2 border-end">
-         <ul class="list-unstyled">
-            <li class="d-grid">
-               <a href="{% url 'profile' %}" class="btn">Profile</a>
-            </li>
-            <li class="d-grid">
-               <a href="{% url 'address' %}" class="btn {{active}}">Address</a>
-            </li>
-         </ul>
-      </div>
+  <div class="row">
 
-      <div class="col-sm-9 offset-sm-1">
-         <div class="row">
-            {% if messages %}
-            {% for message in messages %}
-            <p {% if message.tags %} class="alert alert-{{ message.tags }} fw-bold mb-5" {% endif %}>{{ message }}</p>
-            {% endfor %}
-            {% endif %}
 
-            {% for ad in add %}
-            <div class="col-sm-6">
-               <div class="card m-2">
-                  <div class="card-body">
-                     <h3>Address: {{ forloop.counter }}</h3>
-                     <p>Name: {{ad.name}}</p>
-                     <p>Locality: {{ad.locality}}</p>
-                     <p>City: {{ad.city}}</p>
-                     <p>State: {{ad.state}}</p>
-                     <p>Pin Code: {{ad.zipcode}}</p>
-                  </div>
-               </div>
+    <h3>Welcome <span class="text-capitalize">{{request.user}}</span> </h3>
+    <div class="col-sm-2 border-end">
+      <ul class="list-unstyled text-left">
+
+        <li class="d-grid"><a href="{% url 'profile' %}"
+            class="btn {% if request.path == '/profile/' %}btn-primary fw-bold {% endif %}">Profile</a>
+        </li>
+        <li class="d-grid"><a href="{% url 'address' %}"
+            class="btn {% if request.path == '/address/' %}btn-primary fw-bold{% endif %}">Address</a>
+        </li>
+        
+        <li class="d-grid"><a href="{% url 'showcart' %}"
+            class="btn {% if request.path == '/cart/' %}btn-primary fw-bold {% endif %}">Cart Items</a>
+        </li>
+        <li class="d-grid"><a href="{% url 'orders' %}"
+            class="btn {% if request.path == '/orders/' %}btn-primary fw-bold{% endif %}">Your Orders</a>
+        </li>
+
+      </ul>
+    </div>
+
+    <div class="col-sm-9 offset-sm-1">
+
+      <div class="row">
+        {% if messages %}
+        {% for message in messages %}
+        <p {% if message.tags %} class="alert alert-{{ message.tags }} fw-bold mb-5" {% endif %}>{{ message }}</p>
+        {% endfor %}
+        {% endif %}
+
+        {% for ad in add %}
+
+        <div class="col-sm-6">
+          <div class="card m-2 border-primary" style="border-width: 3px; border-radius: 5px;">
+            <div class="card-body">
+              <h3 class="text-primary">Address: {{ forloop.counter }}</h3>
+              <p class="mb-1"><strong>Name:</strong> {{ ad.name }}</p>
+              <p class="mb-1"><strong>Locality:</strong> {{ ad.locality }}</p>
+              <p class="mb-1"><strong>City:</strong> {{ ad.city }}</p>
+              <p class="mb-1"><strong>State:</strong> {{ ad.state }}</p>
+              <p class="mb-0"><strong>Pin Code:</strong> {{ ad.zipcode }}</p>
             </div>
-            {% empty %}
-            <h3 class="text-center fw-bold">You are not adding any address yet...</h3>
-            {% endfor %}
+          </div>
+        </div>
 
-         </div>
+
+        {% empty %}
+        <h3 class="text-center fw-bold">You are not adding any address yet...</h3>
+        {% endfor %}
+
       </div>
-   </div>
+    </div>
+  </div>
 </div>
 {% endblock main-content %}

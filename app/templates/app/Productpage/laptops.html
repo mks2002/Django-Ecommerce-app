@@ -1,6 +1,6 @@
-{% extends 'app/base.html' %} 
-{% load static %} 
-{% block title %} Laptops {% endblock title %} 
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %} Laptops {% endblock title %}
 
 
 {% block main-content %}
@@ -18,13 +18,16 @@
                     aria-current="true">HP Laptops</a>
 
                 <a href="{% url 'laptopdata' 'Dell'  %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Dell' %} bg-primary text-white fw-bold {% endif %}">Dell Laptops</a>
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Dell' %} bg-primary text-white fw-bold {% endif %}">Dell
+                    Laptops</a>
 
                 <a href="{% url 'laptopdata' 'Asus'  %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Asus' %} bg-primary text-white fw-bold {% endif %}">Asus Laptops</a>
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Asus' %} bg-primary text-white fw-bold {% endif %}">Asus
+                    Laptops</a>
 
                 <a href="{% url 'laptopdata' 'Lenovo'  %}"
-                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Lenovo' %} bg-primary text-white fw-bold {% endif %}">Lenovo Laptops</a>
+                    class="list-group-item list-group-item-action {% if request.path == '/laptop/Lenovo' %} bg-primary text-white fw-bold {% endif %}">Lenovo
+                    Laptops</a>
 
                 <a href="{% url 'laptopdata' 'below'  %}"
                     class="list-group-item list-group-item-action {% if request.path == '/laptop/below' %} bg-primary text-white fw-bold {% endif %}">Below

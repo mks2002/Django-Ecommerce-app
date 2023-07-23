@@ -6,19 +6,14 @@
   <!-- Required meta tags -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" />
-
   <!--Owl Carousel CSS-->
   <link rel="stylesheet" href="{% static 'app/css/owl.carousel.min.css' %}" />
-
   <!--FontAwesome CSS-->
   <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}" />
-
   <!--Custom CSS-->
   <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
-
   <title>SHoPPify | {% block title %} {% endblock title %}</title>
 </head>
 
@@ -38,7 +33,7 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/">About</a>
+            <a class="nav-link active" aria-current="page" href="{% url 'about' %}">About</a>
           </li>
 
           <li class="nav-item">
@@ -51,16 +46,19 @@
               Electronics
             </a>
             <ul class="dropdown-menu" aria-labelledby="electronicsDropdown">
-              <li>
-                <a class="dropdown-item {% if '/mobile/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+              <li> <a
+                  class="dropdown-item {% if '/mobile/' in request.path %} bg-primary text-white fw-bold {% endif %}"
                   href="{% url 'mobile' %}">Mobile</a>
               </li>
 
-              <li><a class="dropdown-item {% if '/laptop/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'laptop' %}">Laptop</a></li>
+              <li> <a
+                  class="dropdown-item {% if '/laptop/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'laptop' %}">Laptop</a>
+              </li>
 
-              <li><a class="dropdown-item {% if '/tv/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'tv' %}">Television</a></li>
+              <li> <a class="dropdown-item {% if '/tv/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'tv' %}">Television</a>
+              </li>
             </ul>
           </li>
 
@@ -71,17 +69,17 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
               <li>
-                <a class="dropdown-item {% if '/topwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'topwear' %}">Top Wear</a>
+                <a 
+                 class="dropdown-item {% if '/topwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                 href="{% url 'topwear' %}">Top Wear</a>
               </li>
               <li>
-                <a class="dropdown-item {% if '/bottomwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'bottomwear' %}">Bottom Wear</a>
+                <a class="dropdown-item {% if '/bottomwear/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'bottomwear' %}">Bottom Wear</a>
               </li>
 
-              <li><a
-                  class="dropdown-item  {% if '/cosmetic/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'cosmetic' %}">Cosmetics</a></li>
+              <li>
+                <aclass="dropdown-item  {% if '/cosmetic/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'cosmetic' %}">Cosmetics</a>
+              </li>
             </ul>
           </li>
 
@@ -91,24 +89,32 @@
               Other Items
             </a>
             <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
-              <li><a class="dropdown-item  {% if '/sport/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'sport' %}">Sports</a></li>
+              <li><a 
+                  class="dropdown-item  {% if '/sport/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'sport' %}">Sports</a>
+              </li>
               <li><a
-                  class="dropdown-item {% if '/stationary/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                  href="{% url 'stationary' %}">Stationaries</a></li>
+                  class="dropdown-item {% if '/stationary/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'stationary' %}">Stationaries</a>
+              </li>
             </ul>
           </li>
 
         </ul>
-        {% comment %} this is the form for the search currently not working .... {% endcomment %}
 
+        {% if request.path != '/' %}
+
+        {% comment %} this is the form for the search currently not working .... {% endcomment %}
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
           <button class="btn btn-warning" type="submit">S</button>
         </form>
 
+        {% endif %}
+        
+
         <div>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
             {% if request.user.is_authenticated %}
 
             <li class="nav-item dropdown mx-2">
@@ -131,6 +137,7 @@
                 </li>
               </ul>
             </li>
+
             <li class="nav-item mx-2">
               <a href="{% url 'showcart' %}" class="nav-link text-white"><span
                   class="badge bg-danger">{{totalitem}}</span> Cart
@@ -142,6 +149,7 @@
             <li class="nav-item mx-2">
               <a href="{% url 'login' %}" class="nav-link text-white">Login</a>
             </li>
+
             <li class="nav-item mx-2">
               <a href="{% url 'customerregistration' %}" class="nav-link text-white">Registration</a>
             </li>

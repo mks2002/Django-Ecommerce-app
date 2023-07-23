@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
@@ -16,7 +17,8 @@ from django.utils.decorators import method_decorator
 
 from django.db.models import OuterRef, Subquery
 
-method_decorator(login_required)
+
+@method_decorator(never_cache, name='dispatch')
 class ProductView(View):
     def get(self, request):
         totalitem = 0
@@ -64,6 +66,7 @@ class ProductView(View):
         )
 
 
+@method_decorator(never_cache, name='dispatch')
 class ProductDetailView(View):
 
     def get(self, request, pk):
@@ -73,7 +76,8 @@ class ProductDetailView(View):
         item_already_in_cart = False
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
-            item_already_in_cart = Cart.objects.filter( Q(product=product.id) & Q(user=request.user) ).exists()
+            item_already_in_cart = Cart.objects.filter(
+                Q(product=product.id) & Q(user=request.user)).exists()
         return render(
             request,
             'app/productdetail.html',
@@ -87,6 +91,16 @@ class ProductDetailView(View):
 # In Django, if you use the login_required decorator above a view function and a user tries to access that view without being logged in, Django will automatically redirect the user to the login page....
 
 
+# about us page ...
+@never_cache
+def aboutpage(request):
+    return render(request, 'app/Aboutpage.html')
+
+#________________________________________________________________________________________________________
+
+# this section is related to cart options and multiple operations on carts ....
+
+
 # in the add to cart we use login_required decorator so that if somebody not logged in then he cant able to acess this page and cant able to add Product in the cart....
 @login_required()
 def add_to_cart(request):
@@ -94,17 +108,17 @@ def add_to_cart(request):
     item_already_in_cart1 = False
     product_id = request.GET.get('prod_id')
     # if item already in cart then it become true.....
-    item_already_in_cart1 = Cart.objects.filter(  Q(product=product_id) & Q(user=request.user) ).exists()
+    item_already_in_cart1 = Cart.objects.filter(
+        Q(product=product_id) & Q(user=request.user)).exists()
     if item_already_in_cart1 == False:
         product_data = Product.objects.get(id=product_id)
-        
+
         Cart(user=user, product=product_data).save()
         messages.success(request, 'Product Added to Cart Successfully !!')
         return redirect('/cart')
     else:
         return redirect('/cart')
 # since in cart table product is a foreign key we have to provide the entire product instance, which is stored in product_data, in place of that field and from there django model automatically save the product_id in the corresponding column but we have to provide the entire product instance if we directly provide the product_id in that column then it gives error......
-
 
 
 @login_required
@@ -118,7 +132,8 @@ def show_cart(request):
         amount = 0.0
         shipping_amount = 70.0
         totalamount = 0.0
-        cart_product = [p for p in Cart.objects.all() if p.user == request.user]
+        cart_product = [p for p in Cart.objects.all() if p.user ==
+                        request.user]
         print(cart_product)
         if cart_product:
             for p in cart_product:
@@ -155,7 +170,8 @@ def plus_cart(request):
         c.save()
         amount = 0.0
         shipping_amount = 70.0
-        cart_product = [p for p in Cart.objects.all() if p.user ==  request.user]
+        cart_product = [p for p in Cart.objects.all() if p.user ==
+                        request.user]
         for p in cart_product:
             tempamount = p.quantity * p.product.discounted_price
             # print('Quantity', p.quantity)
@@ -224,10 +240,9 @@ def remove_cart(request):
     else:
         return HttpResponse('')
 
-# ________________________________________________________________________________________________________________
-# this  are related to payment method.....
+# ______________________________________________________________________________________________________________
 
-import re
+# this  are related to payment method.....
 
 
 @login_required
@@ -244,6 +259,7 @@ def checkout(request):
     flag = True
     totalamount = 0
     shipping_amount = 70.0
+    number = 0
     if prevpage.lower() == 'cardpage':
         amount = 0.0
         totalamount = 0.0
@@ -270,9 +286,8 @@ def checkout(request):
 
     return render(request, 'app/checkout.html',
                   {'address': address, 'cart_items': cart_items,
-                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag},
+                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag, 'number': number},
                   )
-
 
 
 # when we done payments for some products from our card we have to delete them from cards and save it into order table ...
@@ -290,17 +305,39 @@ def payment_done(request):
         print('Order Saved')
         cid.delete()
         print('Cart Item Deleted')
+    messages.success(request, 'Your order is placed successfully !')
+    return redirect('orders')
+
+
+# this is for direct payment without saving into the cart...
+@login_required
+def directpayment(request):
+    custid = request.GET.get('custid')
+    prodid = request.GET.get('productid')
+    product = Product.objects.get(id=prodid)
+    user = request.user
+    customer = Customer.objects.get(id=custid)
+    result = OrderPlaced(user=user, customer=customer,
+                         product=product, quantity=1)
+    result.save()
+    messages.success(request, 'Your order is placed successfully !')
     return redirect('orders')
 
 
 # this is the order page of a user here we filter the all orders corresponding to a particular user....
 @login_required
 def orders(request):
+    totalitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
     op = OrderPlaced.objects.filter(user=request.user)
     uname = request.user.username
-    return render(request, 'app/orders.html', {'order_placed': op, 'uname': uname})
+    return render(request, 'app/orders.html', {'order_placed': op, 'uname': uname, 'totalitem': totalitem})
 
-# ___________________________________________________________________________________________________________________________________
+
+
+#_________________________________________________________________________________________________________
+
 # this section is for product list pages.........
 
 # ('M', 'Mobile'),
@@ -499,9 +536,14 @@ def bottomwear(request, data=None):
 
 
 class CustomerRegistrationView(View):
+
     def get(self, request):
-        form = CustomerRegistrationForm()
-        return render(request, 'app/customerregistration.html', {'form': form})
+        if not request.user.is_authenticated:
+            form = CustomerRegistrationForm()
+            return render(request, 'app/customerregistration.html', {'form': form})
+        else: 
+            messages.warning(request,'You are already logged in so you cant access this page !')
+            return HttpResponseRedirect('/')
 
     def post(self, request):
         form = CustomerRegistrationForm(request.POST)
@@ -529,6 +571,8 @@ def address(request):
     )
 
 
+
+# this is related to user profile page and update the profile ....
 # this is for showing the user his profile......
 
 @method_decorator(login_required, name='dispatch')
@@ -538,6 +582,7 @@ class ProfileView(View):
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
         form = CustomerProfileForm()
+        messages.info(request, 'Here you can add your different address !')
         return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
 
     def post(self, request):

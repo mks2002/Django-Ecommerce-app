@@ -31,6 +31,7 @@
           {% for cart in carts %}
 
           <hr>
+
           <div class="row">
 
             <div class="col-sm-3 text-center align-self-center">
@@ -94,9 +95,10 @@
               <span><strong>Rs. </strong><strong id="totalamount"> {{totalamount|floatformat:2}}</strong></span>
             </li>
           </ul>
-         <!-- this is the payment page url ... -->
+
+          <!-- this is the payment page url ... -->
           <div class="d-grid">
-            <a href="/checkout/?page=Cardpage" class="btn btn-danger fw-bold"
+            <a href="/checkout/?page=Cardpage" class="btn fw-bold"
               style="background-color: #007bff; border-color: #007bff;">Place Order</a>
           </div>
 

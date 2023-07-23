@@ -5,7 +5,23 @@
 {% block main-content %}
 <div class="container my-5">
   <div class="row">
-    <h3 class="text-center">You have no Product in Your Cart</h3>
+    
+    <h3>Welcome <span class="text-capitalize">{{request.user}}</span> </h3>
+    <div class="col-sm-2 border-end">
+      <ul class="list-unstyled text-left">
+        <li class="d-grid"><a href="{% url 'profile' %}"
+            class="btn {% if request.path == '/profile/' %}btn-primary fw-bold {% endif %}">Profile</a></li>
+        <li class="d-grid"><a href="{% url 'address' %}"
+            class="btn {% if request.path == '/address/' %}btn-primary fw-bold{% endif %}">Address</a></li>
+        <li class="d-grid"><a href="{% url 'showcart' %}"
+            class="btn {% if request.path == '/cart/' %}btn-primary fw-bold {% endif %}">Cart Items</a></li>
+        <li class="d-grid"><a href="{% url 'orders' %}"
+            class="btn {% if request.path == '/orders/' %}btn-primary fw-bold{% endif %}">Your Orders</a></li>
+
+      </ul>
+    </div>
+    <div class="col-sm-8 offset-sm-1">
+      <h3 class="text-center">You have no Product in Your Cart</h3>
     <div class="text-center">
       <img
         src="{% static 'app/images/emptycart.png' %}"
@@ -13,6 +29,9 @@
         class="img-fluid img-thumbnail w-25"
       />
     </div>
+    </div>
+    
+
   </div>
 </div>
 {% endblock main-content %}

@@ -59,11 +59,7 @@ class LoginForm(AuthenticationForm):
         ),
     )
 
-    # this function is used for showing notification to user when he is logged in succesfully .....
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, 'You have successfully logged in, If you not complete your profile by adding your address ! ')
-        return response
+    
 
 
 # So, if the code is used in a multilingual website or application, the password label can be easily translated to different languages by simply translating the corresponding strings in the translation files....

@@ -1,6 +1,6 @@
-{% extends 'app/base.html' %} 
-{% load static %} 
-{% block title %} Stationaries {% endblock title %} 
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %} Stationaries {% endblock title %}
 
 
 
@@ -16,23 +16,27 @@
           stationarys Items</a>
 
         <a href="{% url 'stationarydata' 'Copy'  %}"
-          class="list-group-item list-group-item-action  {% if request.path == '/stationary/Copy' %} bg-primary text-white fw-bold {% endif %}"> Copies </a>
+          class="list-group-item list-group-item-action  {% if request.path == '/stationary/Copy' %} bg-primary text-white fw-bold {% endif %}">
+          Copies </a>
 
         <a href="{% url 'stationarydata' 'Drawing'  %}"
-          class="list-group-item list-group-item-action  {% if request.path == '/stationary/Drawing' %} bg-primary text-white fw-bold {% endif %}">Drawing Items</a>
+          class="list-group-item list-group-item-action  {% if request.path == '/stationary/Drawing' %} bg-primary text-white fw-bold {% endif %}">Drawing
+          Items</a>
 
-          <a href="{% url 'stationarydata' 'books'  %}"
+        <a href="{% url 'stationarydata' 'books'  %}"
           class="list-group-item list-group-item-action  {% if request.path == '/stationary/books' %} bg-primary text-white fw-bold {% endif %}">Books</a>
-          
-          <a href="{% url 'stationarydata' 'Classmate'  %}"
-          class="list-group-item list-group-item-action  {% if request.path == '/stationary/Classmate' %} bg-primary text-white fw-bold {% endif %}">Classmate Company Items</a>
+
+        <a href="{% url 'stationarydata' 'Classmate'  %}"
+          class="list-group-item list-group-item-action  {% if request.path == '/stationary/Classmate' %} bg-primary text-white fw-bold {% endif %}">Classmate
+          Company Items</a>
 
 
         <a href="{% url 'stationarydata' 'below'  %}"
           class="list-group-item list-group-item-action  {% if request.path == '/stationary/below' %} bg-primary text-white fw-bold {% endif %}">Below
           1000 Rs</a>
         <a href="{% url 'stationarydata' 'above'  %}"
-          class="list-group-item list-group-item-action  {% if request.path == '/stationary/above' %} bg-primary text-white fw-bold {% endif %}">Above 1000 Rs</a>
+          class="list-group-item list-group-item-action  {% if request.path == '/stationary/above' %} bg-primary text-white fw-bold {% endif %}">Above
+          1000 Rs</a>
 
       </div>
     </div>
