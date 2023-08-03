@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from django.contrib import messages
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -140,3 +141,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
+
+# here we change the error name by danger so that it become bootstrap class also...
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'
+}
+
+# this is the setting to send actual email to the user ....
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'Your host email'
+EMAIL_HOST_PASSWORD = 'your host email password '

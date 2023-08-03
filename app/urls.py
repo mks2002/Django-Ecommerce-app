@@ -59,6 +59,10 @@ urlpatterns = [
     path('address/', views.address, name='address'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
 
+    # for updating and deleting the profile ....
+    path('profile/update/<id>/', views.update_profile, name='update_profile'),
+    path('profile/delete/<id>/', views.delete_profile, name='delete_profile'),
+
 
     # from here we started all our product pages ....
     path('grocery/', views.grocery, name='grocery'),

@@ -96,7 +96,7 @@ class ProductDetailView(View):
 def aboutpage(request):
     return render(request, 'app/Aboutpage.html')
 
-#________________________________________________________________________________________________________
+# ________________________________________________________________________________________________________
 
 # this section is related to cart options and multiple operations on carts ....
 
@@ -250,8 +250,12 @@ def checkout(request):
     totalitem = 0
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))
+
     user = request.user
     address = Customer.objects.filter(user=user)
+    addresscnt = address.count()
+    print(addresscnt)
+
     prevpage = request.GET.get('page')
     # print(prevpage)
     cart_items = Cart.objects.filter(user=request.user)
@@ -274,7 +278,7 @@ def checkout(request):
         match = re.search(r'\d+', prevpage)
         if match:
             number = match.group()
-            print(number)
+            # print(number)
             cart_items = Product.objects.filter(id=number)
             if cart_items:
                 totalamount = cart_items[0].discounted_price+shipping_amount
@@ -286,11 +290,13 @@ def checkout(request):
 
     return render(request, 'app/checkout.html',
                   {'address': address, 'cart_items': cart_items,
-                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag, 'number': number},
+                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag, 'number': number, 'addresscnt': addresscnt},
                   )
-
+# we use a flag variable in template for different kind of payments for direct payment i use flag=false, and for payment of cart items we use flag=true......
 
 # when we done payments for some products from our card we have to delete them from cards and save it into order table ...
+
+
 @login_required
 def payment_done(request):
     custid = request.GET.get('custid')
@@ -335,8 +341,7 @@ def orders(request):
     return render(request, 'app/orders.html', {'order_placed': op, 'uname': uname, 'totalitem': totalitem})
 
 
-
-#_________________________________________________________________________________________________________
+# _________________________________________________________________________________________________________
 
 # this section is for product list pages.........
 
@@ -541,8 +546,9 @@ class CustomerRegistrationView(View):
         if not request.user.is_authenticated:
             form = CustomerRegistrationForm()
             return render(request, 'app/customerregistration.html', {'form': form})
-        else: 
-            messages.warning(request,'You are already logged in so you cant access this page !')
+        else:
+            messages.warning(
+                request, 'You are already logged in so you cant access this page !')
             return HttpResponseRedirect('/')
 
     def post(self, request):
@@ -571,7 +577,6 @@ def address(request):
     )
 
 
-
 # this is related to user profile page and update the profile ....
 # this is for showing the user his profile......
 
@@ -598,7 +603,7 @@ class ProfileView(View):
             state = form.cleaned_data['state']
             zipcode = form.cleaned_data['zipcode']
             if (Customer.objects.filter(user=usr, name=name).exists() | Customer.objects.filter(user=usr, locality=locality).exists()):
-                messages.warning(
+                messages.error(
                     request, 'You already have an account with the same username or locality. Please select another!')
                 return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
             else:
@@ -606,10 +611,48 @@ class ProfileView(View):
                                city=city, state=state, zipcode=zipcode)
                 reg.save()
                 messages.success(
-                    request, 'Congratulations!! Profile Updated Successfully.')
+                    request, 'Congratulations!! your profile created Successfully.')
                 return HttpResponseRedirect('/address/')
         else:
             return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
 
 
 # all of the pages which are shown after login in that we have to send the totalitem value so that in the cart option user can see how many items he added into carts.....
+
+# for updating and deleting we create our custom functions ....
+
+@login_required()
+def update_profile(request, id):
+    print(type(id))
+    id = int(id)
+    totalitem = 0
+    if request.user.is_authenticated:
+        totalitem = len(Cart.objects.filter(user=request.user))
+    customer = Customer.objects.filter(user=request.user, id=id)[0]
+    if request.method == 'POST':
+        form = CustomerProfileForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, 'Your profile is updated successfully ! ')
+            return HttpResponseRedirect('/address/')
+        else:
+            messages.error(request, 'Some error occurs !')
+            return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
+
+    if request.method == 'GET':
+        form = CustomerProfileForm(instance=customer)
+        messages.warning(
+            request, 'Here you can update your existing profile !')
+        return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
+
+# by default all the values which extracted from the url is in form of string so for safety we have to first convert it into integer then do our further work ...
+
+
+@login_required
+def delete_profile(request, id):
+    customer = Customer.objects.filter(user=request.user, id=id)[0]
+    OrderPlaced.objects.filter(user=request.user, customer=customer).delete
+    Customer.objects.filter(user=request.user, id=id).delete()
+    messages.warning(request, 'Your Profile is deleted succesfully ! ')
+    return HttpResponseRedirect('/address/')
