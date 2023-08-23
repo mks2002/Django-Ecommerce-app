@@ -69,16 +69,17 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
               <li>
-                <a 
-                 class="dropdown-item {% if '/topwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
-                 href="{% url 'topwear' %}">Top Wear</a>
+                <a class="dropdown-item {% if '/topwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'topwear' %}">Top Wear</a>
               </li>
               <li>
-                <a class="dropdown-item {% if '/bottomwear/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'bottomwear' %}">Bottom Wear</a>
+                <a class="dropdown-item {% if '/bottomwear/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'bottomwear' %}">Bottom Wear</a>
               </li>
 
               <li>
-                <a class="dropdown-item  {% if '/cosmetic/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'cosmetic' %}">Cosmetics</a>
+                <a class="dropdown-item  {% if '/cosmetic/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'cosmetic' %}">Cosmetics</a>
               </li>
             </ul>
           </li>
@@ -89,28 +90,23 @@
               Other Items
             </a>
             <ul class="dropdown-menu" aria-labelledby="fashionDropdown">
-              <li><a 
-                  class="dropdown-item  {% if '/sport/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+              <li><a class="dropdown-item  {% if '/sport/' in request.path %} bg-primary text-white fw-bold {% endif %}"
                   href="{% url 'sport' %}">Sports</a>
               </li>
               <li><a
-                  class="dropdown-item {% if '/stationary/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'stationary' %}">Stationaries</a>
+                  class="dropdown-item {% if '/stationary/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                  href="{% url 'stationary' %}">Stationaries</a>
               </li>
             </ul>
           </li>
 
         </ul>
 
-        {% if request.path != '/' %}
+        <!-- this is for the search box.... -->
+        {% block searchbar %}
 
-        {% comment %} this is the form for the search currently not working .... {% endcomment %}
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-          <button class="btn btn-warning" type="submit">S</button>
-        </form>
 
-        {% endif %}
-        
+        {% endblock searchbar %}
 
         <div>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -235,6 +231,71 @@
       );
     });
   </script>
+
+
+  {% block javascript %}
+
+
+  <script>
+    let search = document.getElementById('searchTxt');
+    search.addEventListener("input", function () {
+
+      // The closest() method traverses up the DOM tree, starting from the current element (element), and searches for the nearest ancestor element that matches the specified selector (in this case, .card).....
+      let inputVal = search.value.toLowerCase();
+      console.log(inputVal)
+      let noteCards = document.getElementsByClassName('noteCard');
+      Array.from(noteCards).forEach(function (element) {
+
+        let prodtitle = element.getElementsByTagName("h5")[0].innerText.toLowerCase();
+        let discount_price = element.getElementsByTagName("p")[0].innerText;
+        let cost_main = discount_price.substring(3)
+        let parentColDiv = element.closest(".card")
+
+        if (cost_main.includes(inputVal) || prodtitle.includes(inputVal)) {
+          parentColDiv.parentElement.style.display = "block";
+        }
+        else {
+          parentColDiv.parentElement.style.display = "none";
+        }
+      })
+      populate()
+    })
+
+
+    function populate() {
+      let elem = document.getElementById('mylist');
+      let noteCards = document.getElementsByClassName('noteCard');
+      let displayCount = 0;
+
+      Array.from(noteCards).forEach(function (element) {
+        let parentColDiv = element.closest(".card")
+        if (parentColDiv.parentElement.style.display !== "none") {
+          displayCount++;
+        }
+      });
+
+      // this comment is print for frontend search .....
+      if (displayCount == 0) {
+        elem.innerHTML = '<h3 class="text-center w-100">Sorry no such item is available...</h3>';
+        elem.style.display = 'block';
+      }
+
+    }
+
+    // this function is for preventing the page refresh on press enter in the searchbox ....
+    function handleFormSubmit() {
+      let inputVal = document.getElementById('searchTxt').value.toLowerCase();
+      console.log(inputVal);
+
+      return false;
+    }
+
+  </script>
+
+
+  {% endblock javascript %}
+
+
 
 </body>
 

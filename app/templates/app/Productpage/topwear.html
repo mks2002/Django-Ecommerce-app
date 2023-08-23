@@ -2,6 +2,15 @@
 {% load static %}
 {% block title %} Topwear {% endblock title %}
 
+{% block searchbar %}
+<!-- this is for the search bar .... -->
+<form class="d-flex" onsubmit="return handleFormSubmit()">
+  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchTxt" />
+  <button class="btn btn-warning" type="submit">S</button>
+</form>
+
+{% endblock searchbar %}
+
 {% block main-content %}
 <div class="container my-5">
   <div class="row">
@@ -27,14 +36,14 @@
     </div>
 
     <div class="col-sm-9">
-      <div class="row">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="mylist">
         {% for product in topwears %}
         <div class="col-md-4 mb-4">
           <div class="card border-primary custom-card" style="border-radius: 5px; border-width: 3px;">
             <a href="{% url 'product-detail' product.id %}" class="btn">
               <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top" height="300">
             </a>
-            <div class="card-body">
+            <div class="card-body noteCard">
               <h5 class="card-title fw-bold">{{product.title}}</h5>
               <div class="card-text">
                 <p class="fw-bold">

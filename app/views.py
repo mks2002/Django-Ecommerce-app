@@ -357,6 +357,7 @@ def orders(request):
 
 
 # this is for mobile page where all mobiles will display.....
+
 def mobile(request, data=None):
     totalitem = 0
     if request.user.is_authenticated:

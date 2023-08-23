@@ -2,6 +2,14 @@
 {% load static %}
 {% block title %} Mobiles {% endblock title %}
 
+{% block searchbar %}
+<!-- this is for the search bar .... -->
+<form class="d-flex" onsubmit="return handleFormSubmit()">
+  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchTxt" />
+  <button class="btn btn-warning" type="submit">S</button>
+</form>
+
+{% endblock searchbar %}
 
 {% block main-content %}
 <div class="container my-5">
@@ -24,7 +32,7 @@
         <a href="{% url 'mobiledata' 'Apple'  %}"
           class="list-group-item list-group-item-action {% if request.path == '/mobile/Apple' %} bg-primary text-white fw-bold {% endif %}">I
           phones</a>
-          
+
         <a href="{% url 'mobiledata' 'below'  %}"
           class="list-group-item list-group-item-action {% if request.path == '/mobile/below' %} bg-primary text-white fw-bold {% endif %}">Below
           10000</a>
@@ -40,7 +48,7 @@
 
 
     <div class="col-sm-9">
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="mylist">
 
         {% for product in mobiles %}
         <div class="col-md-4 mb-4">
@@ -48,7 +56,7 @@
             <a href="{% url 'product-detail' product.id %}" class="btn">
               <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top" height="300">
             </a>
-            <div class="card-body">
+            <div class="card-body noteCard">
               <h5 class="card-title fw-bold">{{product.title}}</h5>
               <div class="card-text">
                 <p class="fw-bold">
