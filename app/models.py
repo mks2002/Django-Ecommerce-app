@@ -121,8 +121,20 @@ class OrderPlaced(models.Model):
     # Below Property will be used by orders.html page to show total cost
     @property
     def total_cost(self):
-        return self.quantity * self.product.discounted_price
+        return (self.quantity * self.product.discounted_price) + 70
 
+
+# in the model.cascade method if we delete any one user, customer , product then all its associated OrderPlaced is also get deleted .....
 
 
 # @property decorator can be used is for model methods that return computed attributes .....
+
+# this table is for comments and reviews ....
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    description = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.product.title}"

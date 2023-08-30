@@ -16,7 +16,7 @@
 
   {% endfor %}
   {% endif %}
-  
+
   <div class="row my-3">
     <div class="col-sm-6 offset-sm-3">
       <h3>Login</h3>
@@ -32,17 +32,22 @@
 
         <input type="submit" class="btn btn-primary mt-4" value="Login">
         <br>
+
         {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
         <p class="alert alert-danger my-3 fw-bold">{{error}}</p>
         {% endfor %}
-        {% endif %} 
-        <div class="text-center fw-bold"><small ><a href="{% url 'password_reset' %}">Forgot Password ?</a></small>  </div>
-       
-        <div class="text-center text-primary fw-bold"><small>New to Shoppify ? <a
-              href="{% url 'customerregistration' %}" class="text-danger">Create an Account</a> </small></div>
+        {% endif %}
+        <div class="text-center fw-bold"><small><a href="{% url 'password_reset' %}">Forgot Password ?</a></small>
+        </div>
 
-        
+        <div class="text-center text-primary fw-bold">
+          <small>New to Shoppify ?
+            <a href="{% url 'customerregistration' %}" class="text-danger">Create an Account</a>
+          </small>
+        </div>
+
+
       </form>
 
     </div>

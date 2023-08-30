@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import Customer, Product, Cart, OrderPlaced
+from .models import Customer, Product, Cart, OrderPlaced, Comment
 
 
 @admin.register(Customer)
@@ -50,3 +50,11 @@ class OrderPlacedModelAdmin(admin.ModelAdmin):
     def customer_info(self, obj):
         link = reverse('admin:app_customer_change', args=[obj.customer.pk])
         return format_html('<a href="{}">{}</a>', link, obj.customer.name)
+
+
+# this 2 custom functions creates new columns in the order table of django database when we click on this we directly go the that product and customer detail section in the django database .....
+
+
+@admin.register(Comment)
+class CommentModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'product', 'description', 'timestamp']

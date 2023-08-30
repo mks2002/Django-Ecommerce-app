@@ -2,8 +2,8 @@ import re
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
-from .models import Customer, Product, Cart, OrderPlaced
-from .forms import CustomerRegistrationForm, CustomerProfileForm
+from .models import Customer, Product, Cart, OrderPlaced, Comment
+from .forms import CustomerRegistrationForm, CustomerProfileForm, CommentForm
 
 from django.views import View
 from django.views.decorators.cache import never_cache
@@ -16,6 +16,13 @@ from django.utils.decorators import method_decorator
 # it is for showing all the products in the testinomials in the main page .....
 
 from django.db.models import OuterRef, Subquery
+
+# this 2 is used for redirecting into checkout from profile page ...
+from urllib.parse import urlencode
+from django.urls import reverse
+
+# this is for getting current timestamp ....
+from django.utils import timezone
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -65,7 +72,7 @@ class ProductView(View):
             },
         )
 
-
+'''
 @method_decorator(never_cache, name='dispatch')
 class ProductDetailView(View):
 
@@ -73,22 +80,154 @@ class ProductDetailView(View):
         totalitem = 0
         product = Product.objects.get(pk=pk)
         print(product.id)
+        fm = CommentForm()
+        comments=Comment.objects.filter(product=product).order_by('-timestamp')
+        # if there are more then 5 comments then we only show the most new 5 comments ..
+        if len(comments)>5:
+            comments=comments[:5]
         item_already_in_cart = False
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
             item_already_in_cart = Cart.objects.filter(
                 Q(product=product.id) & Q(user=request.user)).exists()
+            # only if the user is authenticated then show this message..
+            messages.info(request,'here you can add your comment !')
+
         return render(
             request,
             'app/productdetail.html',
             {
                 'product': product,
+                'forms': fm,
                 'item_already_in_cart': item_already_in_cart,
+                'comments':comments,
                 'totalitem': totalitem,
             },
         )
 
+    def post(self, request, pk):
+        totalitem = 0
+        form = CommentForm(request.POST)
+        item_already_in_cart = False
+        product = Product.objects.get(id=pk)
+        comments=Comment.objects.filter(product=product).order_by('-timestamp')
+        if len(comments)>5:
+            comments=comments[:5]
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            item_already_in_cart = Cart.objects.filter(
+                Q(product=product.id) & Q(user=request.user)).exists()
+
+        if form.is_valid():
+            usr = request.user
+            comment = form.cleaned_data['description']
+            timestamp = timezone.now()
+            # both the if statements doing the same work .....
+            # if OrderPlaced.objects.filter(product=product,user=request.user).exists():
+            if OrderPlaced.objects.filter(Q(product=product) & Q(user=request.user)).exists():
+                if Comment.objects.filter(user=usr, product=product, description=comment).exists():
+                    messages.warning(request,'You already made this same comment before!')
+                else:
+                    result = Comment(user=usr, product=product, description=comment, timestamp=timestamp)
+                    result.save()
+                    form = CommentForm()
+                    messages.success(request, 'Your comment is added successfully !')
+            else:
+                messages.warning(request,'First you need to purchase this product to make a comment !!')
+        else :
+            # messages.error(request,'something error occured !!')
+            pass
+        return render(request, 'app/productdetail.html', {
+                'product': product,
+                'forms': form,
+                'item_already_in_cart': item_already_in_cart,
+                 'comments':comments,
+                'totalitem': totalitem,
+            },)
+'''            
+
+# for filtering we can use product.id but when we have to save it into the database then we need to pass the entire product value ...
+
 # In Django, if you use the login_required decorator above a view function and a user tries to access that view without being logged in, Django will automatically redirect the user to the login page....
+
+# here code repeatation is less and also we use the functionalities of python object oriented programming.....
+@method_decorator(never_cache, name='dispatch')
+class ProductDetailView(View):
+    template_name = 'app/productdetail.html'
+    comment_form_class = CommentForm
+
+    def __init__(self):
+        super().__init__()
+        self.pk = None
+
+    def get_common_data(self, request, product):
+        totalitem = 0
+        comments = Comment.objects.filter( product=product).order_by('-timestamp')
+        if len(comments) > 5:
+            comments = comments[:5]
+        item_already_in_cart = False
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+            # if exists then it is true else false ...
+            item_already_in_cart = Cart.objects.filter( Q(product=product.id) & Q(user=request.user)).exists()
+        return totalitem, comments, item_already_in_cart
+
+    def get(self, request, pk):
+        self.pk = pk  # Set the pk as an instance attribute
+        product = Product.objects.get(pk=self.pk)
+        totalitem, comments, item_already_in_cart = self.get_common_data(
+            request, product)
+        fm = self.comment_form_class()
+        if request.user.is_authenticated:
+            messages.info(request, 'here you can add your comment !')
+
+        return render(
+            request,
+            self.template_name,
+            {
+                'product': product,
+                'forms': fm,
+                'item_already_in_cart': item_already_in_cart,
+                'comments': comments,
+                'totalitem': totalitem,
+            },
+        )
+    
+    def post(self, request, pk):
+        self.pk = pk
+        product = Product.objects.get(id=self.pk)
+        totalitem, comments, item_already_in_cart = self.get_common_data( request, product)
+        form = self.comment_form_class(request.POST)
+
+        if form.is_valid():
+            usr = request.user
+            comment = form.cleaned_data['description']
+            timestamp = timezone.now()
+            # both the if statements doing the same work .....
+            # if OrderPlaced.objects.filter(product=product,user=request.user).exists():
+            if OrderPlaced.objects.filter(Q(product=product) & Q(user=usr)).exists():
+                if Comment.objects.filter(user=usr, product=product, description=comment).exists():
+                    messages.warning( request, 'You already made this same comment before!')
+                else:
+                    result = Comment(user=usr, product=product,  description=comment, timestamp=timestamp)
+                    result.save()
+                    form = self.comment_form_class()
+                    messages.success( request, 'Your comment is added successfully!')
+                    # so that the values are updated afer the form is submiting ...
+                    totalitem, comments, item_already_in_cart = self.get_common_data( request, product)
+            else:
+                messages.warning( request, 'You need to purchase this product to make a comment!')
+        else:
+            # messages.error(request, 'Something error occurred!')
+            pass
+
+        return render(request, self.template_name, {
+            'product': product,
+            'forms': form,
+            'item_already_in_cart': item_already_in_cart,
+            'comments': comments,
+            'totalitem': totalitem,
+        },)
 
 
 # about us page ...
@@ -129,25 +268,36 @@ def show_cart(request):
         totalitem = len(Cart.objects.filter(user=request.user))
         user = request.user
         cart = Cart.objects.filter(user=user)
-        amount = 0.0
+        print(cart)
+        prodamount = 0.0
         shipping_amount = 70.0
+        # this will cnt the number of different product in the cart so that we add delivery charge on each different product ...
+        prodcnt = 0
         totalamount = 0.0
         cart_product = [p for p in Cart.objects.all() if p.user ==
                         request.user]
         print(cart_product)
+
+        # shipping amount we directly add in the template ...
         if cart_product:
             for p in cart_product:
                 tempamount = p.quantity * p.product.discounted_price
-                amount += tempamount
-            totalamount = amount + shipping_amount
+                prodamount += tempamount
+                prodcnt += 1
+                # amount+=shipping_amount
+
+            amount = prodamount
+            totalamount = amount + (70*prodcnt)
+
             return render(
                 request,
                 'app/addtocart.html',
                 {
                     'carts': cart,
+                    'prodcnt': prodcnt,
                     'amount': amount,
-                    'totalamount': totalamount,
                     'totalitem': totalitem,
+                    'totalamount': totalamount
                 },
             )
         else:
@@ -156,6 +306,8 @@ def show_cart(request):
         # return render(request, 'app/emptycart.html', {'totalitem': totalitem})
         return HttpResponseRedirect('/accounts/login/')
         # pass
+
+# we can iterate on queryset as well as on lists both , so we can use any 1 of those here for iterating we use list method ,but if we want we can direcly iterate on the queryset also ...
 
 # we have 2 options here either we can use empty card rendering with only no_cache decorator , then if the user is not logged in then it shows the empty cart for that user , or we have another option that we can use login_required and never_cache both then automatically if the unautherized user try to access this page he redirect to the login page , in such case the return HttpResponseRedirect('/accounts/login/') is not so important just simply a pass statement is enough because the main function of login_required decorator is to send unauthorized users to the login page if they try to aceess protected route and after successfully login , send to their destination url , but still we use that HttpResponseRedirect('/accounts/login') condition for more better readibilty of code ......
 
@@ -170,6 +322,7 @@ def plus_cart(request):
         c.save()
         amount = 0.0
         shipping_amount = 70.0
+        prodcnt = 0
         cart_product = [p for p in Cart.objects.all() if p.user ==
                         request.user]
         for p in cart_product:
@@ -178,12 +331,15 @@ def plus_cart(request):
             # print('Selling Price', p.product.discounted_price)
             # print('Before', amount)
             amount += tempamount
+            prodcnt += 1
             # print('After', amount)
         # print('Total', amount)
+        totalamount = amount + (shipping_amount*prodcnt)
         data = {
             'quantity': c.quantity,
             'amount': amount,
-            'totalamount': amount + shipping_amount,
+            'prodcnt': prodcnt,
+            'totalamount': totalamount,
         }
         return JsonResponse(data)
     else:
@@ -194,10 +350,16 @@ def minus_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id']
         c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
-        c.quantity -= 1
+
+        # user cant reduce the quantity less then 1 ..
+        if c.quantity > 1:
+            c.quantity -= 1
+        else:
+            pass
         c.save()
         amount = 0.0
         shipping_amount = 70.0
+        prodcnt = 0
         cart_product = [p for p in Cart.objects.all() if p.user ==
                         request.user]
         for p in cart_product:
@@ -206,12 +368,15 @@ def minus_cart(request):
             # print('Selling Price', p.product.discounted_price)
             # print('Before', amount)
             amount += tempamount
+            prodcnt += 1
             # print('After', amount)
         # print('Total', amount)
+        totalamount = amount + (shipping_amount*prodcnt)
         data = {
             'quantity': c.quantity,
             'amount': amount,
-            'totalamount': amount + shipping_amount,
+            'prodcnt': prodcnt,
+            'totalamount': totalamount,
         }
         return JsonResponse(data)
     else:
@@ -225,17 +390,29 @@ def remove_cart(request):
         c.delete()
         amount = 0.0
         shipping_amount = 70.0
+        prodcnt = 0
         cart_product = [p for p in Cart.objects.all() if p.user ==
                         request.user]
+
         for p in cart_product:
             tempamount = p.quantity * p.product.discounted_price
             # print('Quantity', p.quantity)
             # print('Selling Price', p.product.discounted_price)
             # print('Before', amount)
             amount += tempamount
+            prodcnt += 1
             # print('After', amount)
         # print('Total', amount)
-        data = {'amount': amount, 'totalamount': amount + shipping_amount}
+        totalamount = amount + (shipping_amount*prodcnt)
+        msg = 'Product removed from cart successfully !!'
+        if totalamount == 0:
+            msg = 'Your cart is now empty !! '
+        data = {
+            'amount': amount,
+            'prodcnt': prodcnt,
+            'totalamount': totalamount,
+            'msg': msg,
+        }
         return JsonResponse(data)
     else:
         return HttpResponse('')
@@ -246,6 +423,7 @@ def remove_cart(request):
 
 
 @login_required
+@never_cache
 def checkout(request):
     totalitem = 0
     if request.user.is_authenticated:
@@ -263,6 +441,7 @@ def checkout(request):
     flag = True
     totalamount = 0
     shipping_amount = 70.0
+    Prodcnt = 0  # it count differents type of product ..
     number = 0
     if prevpage.lower() == 'cardpage':
         amount = 0.0
@@ -273,8 +452,10 @@ def checkout(request):
             for p in cart_product:
                 tempamount = p.quantity * p.product.discounted_price
                 amount += tempamount
-            totalamount = amount + shipping_amount
+                Prodcnt += 1
+            totalamount = amount + (shipping_amount * Prodcnt)
     else:
+        Prodcnt = 1
         match = re.search(r'\d+', prevpage)
         if match:
             number = match.group()
@@ -290,9 +471,11 @@ def checkout(request):
 
     return render(request, 'app/checkout.html',
                   {'address': address, 'cart_items': cart_items,
-                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag, 'number': number, 'addresscnt': addresscnt},
+                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag, 'number': number, 'addresscnt': addresscnt, 'prodcnt': Prodcnt, 'prevpage': prevpage},
                   )
-# we use a flag variable in template for different kind of payments for direct payment i use flag=false, and for payment of cart items we use flag=true......
+# we use this addresscnt variable so that if it is 0 then we have to prevent to show the payment button , and user need to first complete his profile by adding address then we show the payment option to him ....
+
+# we use a flag variable in template for different kind of payments for direct payment I use flag=false, and for payment of cart items we use flag=true......
 
 # when we done payments for some products from our card we have to delete them from cards and save it into order table ...
 
@@ -581,7 +764,9 @@ def address(request):
 # this is related to user profile page and update the profile ....
 # this is for showing the user his profile......
 
+
 @method_decorator(login_required, name='dispatch')
+@method_decorator(never_cache, name='dispatch')
 class ProfileView(View):
     def get(self, request):
         totalitem = 0
@@ -611,9 +796,21 @@ class ProfileView(View):
                 reg = Customer(user=usr, name=name, locality=locality,
                                city=city, state=state, zipcode=zipcode)
                 reg.save()
-                messages.success(
-                    request, 'Congratulations!! your profile created Successfully.')
-                return HttpResponseRedirect('/address/')
+                prevdest = request.GET.get('prevpage', None)
+
+                if prevdest == 'checkout':
+                    # this is how we have to generate the redirect url with get parameter ..
+                    page = request.GET.get('page', None)
+                    query_params = urlencode({'page': page}) if page else ''
+                    redirect_url = reverse('checkout') + f'?{query_params}'
+                    # print(redirect_url)
+                    messages.success(
+                        request, 'Congratulations!! your profile created Successfully.')
+                    return HttpResponseRedirect(redirect_url)
+                else:
+                    messages.success(
+                        request, 'Congratulations!! your profile created Successfully.')
+                    return HttpResponseRedirect('/address/')
         else:
             return render(request, 'app/profile.html', {'form': form, 'totalitem': totalitem})
 
@@ -630,6 +827,7 @@ def update_profile(request, id):
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))
     customer = Customer.objects.filter(user=request.user, id=id)[0]
+
     if request.method == 'POST':
         form = CustomerProfileForm(request.POST, instance=customer)
         if form.is_valid():

@@ -1,5 +1,7 @@
 {% extends 'app/base.html' %}
 {% load static %}
+<!-- this is we load to use our custom multiply template filter .. -->
+{% load firstcustomFilter %}
 {% block title %}Cart{% endblock title %}
 
 
@@ -11,7 +13,7 @@
   {% for message in messages %}
 
   <div class="alert  {% if message.tags %} alert-{{message.tags}}{% endif %} alert-dismissible fade show" role="alert">
-    <strong class="ms-4">{{ message }}</strong>
+    <strong class="ms-4" id="msgbox">{{ message }}</strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 
@@ -57,6 +59,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
+
                   <a class="btn btn-sm btn-danger mr-3 remove-cart" pid="{{cart.product.id}}"
                     style="background-color: #dc3545; color: #fff; border-color: #dc3545;"
                     onmouseover="this.style.backgroundColor='transparent'; this.style.color='#000'; this.style.borderColor='#000';"
@@ -76,29 +79,31 @@
         </div>
       </div>
 
+      <h5 class="text-center fw-bold my-1 mt-3">We take delivery charge Rs.70 on each different product.</h4>
+
     </div>
 
     <div class="col-sm-4">
       <div class="card border-primary">
         <div class="card-body">
-          <h3>The Total Amount of</h3>
+          <h3>The Total Amount is</h3>
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-              Amount<span>Rs. <span id="amount">{{amount|floatformat:2}}</span> </span></li>
+              Amount<span>Rs. <span class="fw-bold" id="amount">{{amount|floatformat:2}}</span> </span></li>
             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
-              Shipping<span>Rs. 70.00</span></li>
+              Shipping<span class="fw-bold">Rs. (70 x <span id="prodcnt"> {{prodcnt}} </span> )</span></li>
             <hr>
             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
               <div>
-                <strong>Total</strong> <small>(including VAT)</small>
+                <strong>Total</strong> <small>(including delivery)</small>
               </div>
-              <span><strong>Rs. </strong><strong id="totalamount"> {{totalamount|floatformat:2}}</strong></span>
+              <span><strong>Rs. </strong><strong id="totalamount"> {{totalamount |floatformat:2}}</strong></span>
             </li>
           </ul>
 
           <!-- this is the payment page url ... -->
           <div class="d-grid">
-            <a href="/checkout/?page=Cardpage" class="btn fw-bold"
+            <a href="/checkout/?page=Cardpage" class="btn fw-bold" id="paymentbtn"
               style="background-color: #007bff; border-color: #007bff;">Place Order</a>
           </div>
 

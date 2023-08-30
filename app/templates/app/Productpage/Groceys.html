@@ -49,6 +49,10 @@
 
 
         <div class="col-sm-9">
+
+            <!-- this div is used if nothing matches with search result then to show the not found message ... -->
+            <div id="searchResults"></div>
+
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="mylist">
 
                 {% for product in grocery %}
@@ -63,8 +67,7 @@
                             <div class="card-text">
                                 <p class="fw-bold">
                                     Rs. {{product.discounted_price}}
-                                    <small
-                                        class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                                    <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
                                 </p>
                             </div>
                         </div>

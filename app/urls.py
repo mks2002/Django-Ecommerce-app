@@ -15,9 +15,7 @@ from .forms import (
     MySetPasswordForm,
 )
 
-# path('', views.home),
-# path('profile/', views.profile, name='profile'),
-# path('product-detail', views.product_detail, name='product-detail'),
+
 
 urlpatterns = [
 
@@ -28,6 +26,8 @@ urlpatterns = [
         views.ProductDetailView.as_view(),
         name='product-detail',
     ),
+
+    # path('product-detail/<int:pk>/',views.ProductDetailfunc,name='product-detail',),
 
 
     # the first url is just for saving the product into the cart table and then it redirect to the 2nd url which will show all the carts product of a particular user ....
@@ -48,7 +48,7 @@ urlpatterns = [
     # this is for just saving the data into order table and delete from cart table during payment, payment is done by paypal upi ...
     path('paymentdone/', views.payment_done, name='paymentdone'),
 
-    # direct payment for product without saving it into cart ...
+    # direct payment for product without saving it into cart, for single product ...
     path('directpayment/',views.directpayment, name='directpayment'),
 
     # this is just for displaying all the orders of a particular user ...

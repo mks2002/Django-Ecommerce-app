@@ -14,7 +14,7 @@
       <strong class="ms-4">{{ message }}</strong>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-   
+
     {% endfor %}
     {% endif %}
 
@@ -39,7 +39,8 @@
 
       {% for op in order_placed %}
 
-      <div class="container"> <!-- Increase the min-height value as desired -->
+      <div class="container">
+        <!-- Increase the min-height value as desired -->
         <div class="row shadow-sm mb-3 border border-primary" style="border-radius: 8px; min-height: 150px;">
           <div class="col-sm-2 d-flex align-items-center justify-content-center">
             <img src="{{ op.product.product_image.url }}" alt="" srcset="" class="img-fluid" height="90%" width="150"
@@ -49,9 +50,12 @@
             <div>
               <p class="fw-bold" style="color: #007bff;">Product: {{ op.product.title }}</p>
               <p class="mb-1 fw-bold">Quantity: {{ op.quantity }}</p>
-              <p class="fw-bold">Price: {{ op.total_cost }}</p>
-              <!-- totalamount= quant* single price + 70 -->
-              <p class="fw-bold">Total amount: {{ op.total_cost|multiply:op.quantity |add:70 }}</p>
+              <p class="fw-bold">Price(single) : {{ op.product.discounted_price }}</p>
+              <p class="fw-bold my-0">deliver : 70</p>
+              <!-- we can use any of these 2 methods to get the total cost -->
+              <!-- <p class="fw-bold">Total amount: {{ op.total_cost }}</p> -->
+              <p class="fw-bold">Total amount: {{ op.product.discounted_price|multiply:op.quantity |add:70
+                |floatformat:1 }}</p>
             </div>
           </div>
           <div class="col-sm-3 d-flex align-items-center justify-content-center">

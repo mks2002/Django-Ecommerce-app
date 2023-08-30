@@ -13,7 +13,7 @@ from django.contrib.auth.forms import (
 
 from django.contrib.auth.models import User
 from django.utils.translation import gettext, gettext_lazy as _
-from .models import Customer
+from .models import Customer, Comment
 from django.contrib.auth import password_validation
 
 
@@ -58,8 +58,6 @@ class LoginForm(AuthenticationForm):
             attrs={'autocomplete': 'current-password', 'class': 'form-control'}
         ),
     )
-
-    
 
 
 # So, if the code is used in a multilingual website or application, the password label can be easily translated to different languages by simply translating the corresponding strings in the translation files....
@@ -163,3 +161,28 @@ class CustomerProfileForm(forms.ModelForm):
             raise forms.ValidationError("Zip code can only contain numbers.")
         if zipcode and len(str(zipcode)) != 6:
             raise forms.ValidationError("Zip code must be exactly 6 digits.")
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['description']
+        widgets = {
+            'description': forms.Textarea(
+                attrs={'class': 'form-control',
+                       'required': 'required',
+                       'placeholder': 'Add your comments and reviews here ..',
+                       'rows': 2})
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        description = cleaned_data.get('description')
+        if description:
+            wordcnt = len(description.split())
+            if wordcnt < 5:
+                raise forms.ValidationError(
+                    'Invailed Comment, Pleas give geniune review ..')
+
+
+# before applying the split method first we need to check if it is not empty otherwise it gives error ....

@@ -8,45 +8,46 @@
 
 <!--Banner Slider-->
 
-  {% if messages %}
-  {% for message in messages %}
-  
-  <div class="alert  {% if message.tags %} alert-{{message.tags}}{% endif %} alert-dismissible mb-0 fade show" role="alert">
-    <strong class="ms-4">{{ message }}</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  
-  {% endfor %}
-  {% endif %}
+{% if messages %}
+{% for message in messages %}
+
+<div class="alert  {% if message.tags %} alert-{{message.tags}}{% endif %} alert-dismissible mb-0 fade show"
+  role="alert">
+  <strong class="ms-4">{{ message }}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endfor %}
+{% endif %}
 
 
 
-  <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    {% comment %} Below Code will be used by add_to_cart view {% endcomment %}
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+  {% comment %} Below Code will be used by add_to_cart view {% endcomment %}
 
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{% static 'app/images/banner/b1.jpg' %}" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'app/images/banner/b2.jpg' %}" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'app/images/banner/b3.jpg' %}" class="d-block w-100" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'app/images/banner/b4.jpg' %}" class="d-block w-100" alt="...">
-      </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'app/images/banner/b1.jpg' %}" class="d-block w-100" alt="...">
     </div>
-    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </a>
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/b2.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/b3.jpg' %}" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/b4.jpg' %}" class="d-block w-100" alt="...">
+    </div>
   </div>
+  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </a>
+</div>
 
 
 {% endblock banner_slider %}
@@ -55,13 +56,19 @@
 
 {% block livesale %}
 <!-- Live Sale Section -->
-<div class="container">
-  <div class="row bg-danger text-center p-5 text-white border-bottom shadow">
-    <h1>SALE IS LIVE NOW</h1>
-    <span>5% Instant Discount on Axis Bank Credit and Debit Card</span>
-    <small class="fw-lighter">Term and Condition Applied (For details visit Bank's official Website)</small>
+<div class="container-fluid" style="margin-top: 10px;">
+  <div class="row">
+    <div class="col-lg-12 bg-primary text-white py-4 text-center"
+      style="border-top: 4px solid #dc3545; border-bottom: 4px solid #dc3545; background-image: linear-gradient(to right, #007bff, #007bff 40%, #17a2b8);">
+      <h2 class="display-4 mb-2 fw-bold" style="font-size: 44px;">SALE IS LIVE NOW</h2>
+      <p class="lead mb-4 " style="font-size: 27px; font-weight:700;">Get 5% Instant Discount on Axis Bank Credit and
+        Debit Card</p>
+      <p class="fw-bold " style="font-size: 18px; font-weight:600; color: #f8f9fa; ">Terms and Conditions Apply. Visit
+        Bank's official website for details.</p>
+    </div>
   </div>
 </div>
+
 
 {% endblock livesale %}
 
@@ -72,7 +79,7 @@
 
 <!-- 1st Product Slider -->
 <div class="mx-3">
-  <h2 class="text-center mt-3">Great Deals: Most Affordable Products</h2>
+  <h2 class="text-center mt-3 fw-bold">Great Deals: Most Affordable Products</h2>
 
   <!-- Slider 1 -->
   <div class="owl-carousel" id="slider1">
@@ -83,6 +90,7 @@
         <a href="{% url 'product-detail' lowprod.id %}" class="btn">
           <img src="{{lowprod.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
+        <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title fw-bold">{{lowprod.title}}</h5>
           <div class="card-text">
@@ -104,7 +112,7 @@
 <!-- 2nd Product Slider -->
 
 <div class="mx-3">
-  <h2 class="text-center">Luxury Collection: Our Most Expensive Products</h2>
+  <h2 class="text-center fw-bold mt-3">Luxury Collection: Our Most Expensive Products</h2>
 
   <!-- Slider 2 -->
   <div class="owl-carousel" id="slider2">
@@ -114,6 +122,7 @@
         <a href="{% url 'product-detail' highprod.id %}" class="btn">
           <img src="{{highprod.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
+        <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title fw-bold">{{highprod.title}}</h5>
           <div class="card-text">
@@ -134,7 +143,7 @@
 <hr class="container-fluid">
 
 <!-- Payment Info Section -->
-<h2 class="text-center my-2">OUR Partners and Investors </h2>
+<h2 class="text-center my-2 mt-3 fw-bold">OUR Partners and Investors </h2>
 <div class="container-fluid my-5">
   <div class="row">
 
@@ -177,7 +186,7 @@
 
 <!-- 3rd Product Slider -->
 <div class="m-3">
-  <h2 class="text-center">ShoPPify Bottom Wear</h2>
+  <h2 class="text-center mt-3 fw-bold">ShoPPify Bottom Wear</h2>
 
   <!-- Slider 3 -->
   <div class="owl-carousel" id="slider3">
@@ -187,6 +196,7 @@
         <a href="{% url 'product-detail' b.id %}" class="btn">
           <img src="{{b.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
+        <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title fw-bold">{{b.title}}</h5>
           <div class="card-text">
@@ -209,7 +219,7 @@
 
 <!-- 4th Product Slider -->
 <div class="mx-3">
-  <h2 class="text-center">ShoPPify Top Wear</h2>
+  <h2 class="text-center fw-bold mt-3">ShoPPify Top Wear</h2>
 
   <!-- Slider 4 -->
   <div class="owl-carousel" id="slider4">
@@ -219,6 +229,7 @@
         <a href="{% url 'product-detail' tp.id %}" class="btn">
           <img src="{{tp.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
+        <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title fw-bold">{{tp.title}}</h5>
           <div class="card-text">
@@ -240,7 +251,7 @@
 
 <!-- 5th Product Slider -->
 <div class="mx-3">
-  <h2 class="text-center">ShoPPify Grocery Items</h2>
+  <h2 class="text-center fw-bold mt-3">ShoPPify Grocery Items</h2>
   <!-- Slider 5 -->
   <div class="owl-carousel" id="slider5">
     {% for item in grocery %}
@@ -249,6 +260,7 @@
         <a href="{% url 'product-detail' item.id %}" class="btn">
           <img src="{{item.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
+        <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title fw-bold">{{item.title}}</h5>
           <div class="card-text">

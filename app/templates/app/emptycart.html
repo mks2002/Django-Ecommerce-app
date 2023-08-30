@@ -1,11 +1,11 @@
 {% extends 'app/base.html' %}
 {% load static %}
-{% block title %}Empty Cart{% endblock title %} 
+{% block title %}Empty Cart{% endblock title %}
 
 {% block main-content %}
 <div class="container my-5">
   <div class="row">
-    
+
     <h3>Welcome <span class="text-capitalize">{{request.user}}</span> </h3>
     <div class="col-sm-2 border-end">
       <ul class="list-unstyled text-left">
@@ -22,15 +22,11 @@
     </div>
     <div class="col-sm-8 offset-sm-1">
       <h3 class="text-center">You have no Product in Your Cart</h3>
-    <div class="text-center">
-      <img
-        src="{% static 'app/images/emptycart.png' %}"
-        alt=""
-        class="img-fluid img-thumbnail w-25"
-      />
+      <div class="text-center">
+        <img src="{% static 'app/images/emptycart.png' %}" alt="" class="img-fluid img-thumbnail w-25" />
+      </div>
     </div>
-    </div>
-    
+
 
   </div>
 </div>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 
 <head>
@@ -14,7 +15,15 @@
   <link rel="stylesheet" href="{% static 'app/css/all.min.css' %}" />
   <!--Custom CSS-->
   <link rel="stylesheet" href="{% static 'app/css/style.css' %}" />
+
   <title>SHoPPify | {% block title %} {% endblock title %}</title>
+
+  <!-- for using font awsome icons with django ... -->
+  <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+  <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -135,8 +144,12 @@
             </li>
 
             <li class="nav-item mx-2">
-              <a href="{% url 'showcart' %}" class="nav-link text-white"><span
-                  class="badge bg-danger">{{totalitem}}</span> Cart
+              <a href="{% url 'showcart' %}" class="nav-link text-white d-flex align-items-center">
+                <span class="me-1">Cart</span>
+                <div class="cart d-inline-block">
+                  <span id="navcnt" class="count">{{totalitem}}</span>
+                  <i class="material-icons fa-solid fa-cart-shopping text-white"></i>
+                </div>
               </a>
             </li>
 
@@ -215,6 +228,8 @@
   <script src="{% static 'app/js/owl.carousel.min.js' %}"></script>
   <script src="{% static 'app/js/all.min.js' %}"></script>
   <script src="{% static 'app/js/myscript.js' %}"></script>
+
+
   <script>
     //  this is open and closing of dropdown on hover in header section ...
     $(document).ready(function () {
@@ -235,12 +250,14 @@
 
   {% block javascript %}
 
-
+  <!-- this javascript is for frontend based search ... -->
   <script>
+
+    // The closest() method traverses up the DOM tree, starting from the current element (element), and searches for the nearest ancestor element that matches the specified selector (in this case, .card).....
+
     let search = document.getElementById('searchTxt');
     search.addEventListener("input", function () {
 
-      // The closest() method traverses up the DOM tree, starting from the current element (element), and searches for the nearest ancestor element that matches the specified selector (in this case, .card).....
       let inputVal = search.value.toLowerCase();
       console.log(inputVal)
       let noteCards = document.getElementsByClassName('noteCard');
@@ -267,6 +284,8 @@
       let noteCards = document.getElementsByClassName('noteCard');
       let displayCount = 0;
 
+      let searchResults = document.getElementById('searchResults');
+
       Array.from(noteCards).forEach(function (element) {
         let parentColDiv = element.closest(".card")
         if (parentColDiv.parentElement.style.display !== "none") {
@@ -276,8 +295,11 @@
 
       // this comment is print for frontend search .....
       if (displayCount == 0) {
-        elem.innerHTML = '<h3 class="text-center w-100">Sorry no such item is available...</h3>';
-        elem.style.display = 'block';
+        searchResults.innerHTML = '<h3 class="text-center w-100">Sorry no such item is available...</h3>';
+        searchResults.style.display = 'block';
+      } else {
+        searchResults.innerHTML = '';
+        searchResults.style.display = 'none';
       }
 
     }

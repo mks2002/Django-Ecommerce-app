@@ -5,15 +5,15 @@
 
 {% block main-content %}
 
-<div class="container my-5">
+<div class="container my-5 ">
 
   <div class="row">
 
     <div class="col-sm-6 text-center align-self-center">
-      <div class="card border-primary"
+      <div class="card border-0 p-0"
         style="width: 45vw; height: 50vh; display: flex; align-items: center; justify-content: center;">
         <img src="{{product.product_image.url}}" alt="" class="card-img-top img-fluid"
-          style="object-fit: contain; max-height: 100%; max-width: 100%; border: 2px solid #007bff;">
+          style="object-fit: contain; max-height: 100%; max-width: 100%; border: 3px solid #007bff;">
       </div>
     </div>
 
@@ -30,16 +30,18 @@
       {% if user.is_authenticated %}
 
       {% if item_already_in_cart %}
-      <a href="{% url 'showcart' %}" class="btn btn-warning shadow px-5 py-2 mt-3">Go to Cart</a>
+      <a href="{% url 'showcart' %}" class="btn btn-warning shadow fw-bold px-5 py-2 mt-3">Go to Cart</a>
       {% else %}
-      {% comment %} we can use both this method , both works same ... {% endcomment %}
+
+      <!-- we can use both this method , both works same ... -->
       <!--
         <form action="/add-to-cart" class="d-inline mt-3">
         <input type="hidden" name="prod_id" value="{{product.id}}" id="prod_id">
         <button type="submit" class="btn btn-primary shadow px-5 py-2 mt-3">Add to Cart</button>
       </form>
      -->
-      <a href="/add-to-cart/?prod_id={{product.id}}" class="btn btn-primary shadow px-5 py-2 mt-3">Add to Cart</a>
+      <a href="/add-to-cart/?prod_id={{product.id}}" class="btn btn-primary fw-bold shadow px-5 py-2 mt-3">Add to
+        Cart</a>
       {% endif %}
 
       {% endif %}
@@ -47,12 +49,13 @@
       {% if not request.user.is_authenticated %}
       <form action="/add-to-cart" class="d-inline mt-3">
         <input type="hidden" name="prod_id" value="{{product.id}}" id="prod_id">
-        <button type="submit" class="btn btn-primary shadow px-5 py-2 mt-3">Add to Cart</button>
+        <button type="submit" class="btn btn-primary shadow fw-bold px-5 py-2 mt-3">Add to Cart</button>
       </form>
       {% endif %}
 
-      <!-- this is the payment page url ... -->
-      <a href="/checkout/?page=Productpage-{{product.id}}" class="btn btn-danger shadow px-5 py-2 ms-3 mt-3">Buy Now</a>
+      <!-- this is the payment page url it remains same for all types of users and product... -->
+      <a href="/checkout/?page=Productpage-{{product.id}}" class="btn btn-danger fw-bold shadow px-5 py-2 ms-3 mt-3">Buy
+        Now</a>
 
       <h5 class="mt-5">Available Offers</h5>
       <ul>
@@ -63,6 +66,96 @@
       </ul>
     </div>
   </div>
+</div>
+
+<hr class="container-fluid my-2 mb-5" style="height: 2px">
+
+<div class="container">
+
+  <h4 class="mb-0">Recent comments</h4>
+  <p class="fw-light mb-4 pb-2">Latest Comments section by users</p>
+
+  {% if request.user.is_authenticated %}
+
+  {% if messages %}
+  {% for message in messages %}
+
+
+  <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+    <strong class="ms-4">{{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+
+  {% endfor %}
+  {% endif %}
+
+  <!-- if we not mention the action attribute then it by default take the get method attribute which render this page ... -->
+  <form class="form-outline mb-4" method="post" novalidate action="{% url 'product-detail' product.id %}">
+    {% csrf_token %}
+
+    {% for fm in forms %}
+    <div class="d-flex flex-wrap justify-content-between">
+      <div class="form-group flex-grow-1 mr-2">
+        <label class="form-label fw-bold">{{ fm.label }}</label>
+        {{ fm }} <small class="text-danger fw-bold">{{ fm.errors|striptags }}</small>
+      </div>
+
+      <div class="form-group ms-1 mb-0">
+        <input type="submit" class="btn btn-sm btn-primary shadow fw-bold px-4 mt-5 mb-0" value="POST">
+      </div>
+    </div>
+
+    {% if forms.non_field_errors %}
+    {% for error in forms.non_field_errors %}
+    <p class="text-danger my-0 fw-bold">{{ error |striptags }}</p>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+  </form>
+
+  <hr class="container-fluid w-100 my-3" style="height: 2px">
+
+  {% endif %}
+
+
+  <div class="row d-flex justify-content-center">
+
+    <div class="card text-dark mb-4 p-3">
+
+      {% for cm in comments %}
+
+      <div class="card-body p-2">
+        <div class="d-flex flex-start">
+          <div>
+            <h6 class="fw-bold mb-1">{{cm.user.username}}</h6>
+            <div class="d-flex align-items-center mb-1">
+              <p class="mb-0">
+                {{cm.timestamp}}
+              </p>
+
+            </div>
+            <p class="mb-0">
+              {{cm.description}}
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <hr class="my-0" />
+      {% empty %}
+      <h3 class="text-left fw-bold my-1">There is no Reviews for this product .</h3>
+      {% endfor %}
+
+
+    </div>
+
+  </div>
+
+
+
+
 </div>
 
 {% endblock main-content %}
