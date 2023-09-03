@@ -72,7 +72,10 @@ class ProductView(View):
             },
         )
 
+
 '''
+# here we have to use same code in both get and post method , so we try to keep all common codes at one place in modified method ..
+
 @method_decorator(never_cache, name='dispatch')
 class ProductDetailView(View):
 
@@ -144,13 +147,15 @@ class ProductDetailView(View):
                  'comments':comments,
                 'totalitem': totalitem,
             },)
-'''            
+'''
 
 # for filtering we can use product.id but when we have to save it into the database then we need to pass the entire product value ...
 
 # In Django, if you use the login_required decorator above a view function and a user tries to access that view without being logged in, Django will automatically redirect the user to the login page....
 
 # here code repeatation is less and also we use the functionalities of python object oriented programming.....
+
+
 @method_decorator(never_cache, name='dispatch')
 class ProductDetailView(View):
     template_name = 'app/productdetail.html'
@@ -162,14 +167,16 @@ class ProductDetailView(View):
 
     def get_common_data(self, request, product):
         totalitem = 0
-        comments = Comment.objects.filter( product=product).order_by('-timestamp')
+        comments = Comment.objects.filter(
+            product=product).order_by('-timestamp')
         if len(comments) > 5:
             comments = comments[:5]
         item_already_in_cart = False
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
             # if exists then it is true else false ...
-            item_already_in_cart = Cart.objects.filter( Q(product=product.id) & Q(user=request.user)).exists()
+            item_already_in_cart = Cart.objects.filter(
+                Q(product=product.id) & Q(user=request.user)).exists()
         return totalitem, comments, item_already_in_cart
 
     def get(self, request, pk):
@@ -192,11 +199,12 @@ class ProductDetailView(View):
                 'totalitem': totalitem,
             },
         )
-    
+
     def post(self, request, pk):
         self.pk = pk
         product = Product.objects.get(id=self.pk)
-        totalitem, comments, item_already_in_cart = self.get_common_data( request, product)
+        totalitem, comments, item_already_in_cart = self.get_common_data(
+            request, product)
         form = self.comment_form_class(request.POST)
 
         if form.is_valid():
@@ -207,16 +215,21 @@ class ProductDetailView(View):
             # if OrderPlaced.objects.filter(product=product,user=request.user).exists():
             if OrderPlaced.objects.filter(Q(product=product) & Q(user=usr)).exists():
                 if Comment.objects.filter(user=usr, product=product, description=comment).exists():
-                    messages.warning( request, 'You already made this same comment before!')
+                    messages.warning(
+                        request, 'You already made this same comment before!')
                 else:
-                    result = Comment(user=usr, product=product,  description=comment, timestamp=timestamp)
+                    result = Comment(user=usr, product=product,
+                                     description=comment, timestamp=timestamp)
                     result.save()
                     form = self.comment_form_class()
-                    messages.success( request, 'Your comment is added successfully!')
+                    messages.success(
+                        request, 'Your comment is added successfully!')
                     # so that the values are updated afer the form is submiting ...
-                    totalitem, comments, item_already_in_cart = self.get_common_data( request, product)
+                    totalitem, comments, item_already_in_cart = self.get_common_data(
+                        request, product)
             else:
-                messages.warning( request, 'You need to purchase this product to make a comment!')
+                messages.warning(
+                    request, 'You need to purchase this product to make a comment!')
         else:
             # messages.error(request, 'Something error occurred!')
             pass
@@ -268,7 +281,7 @@ def show_cart(request):
         totalitem = len(Cart.objects.filter(user=request.user))
         user = request.user
         cart = Cart.objects.filter(user=user)
-        print(cart)
+        # print(cart)
         prodamount = 0.0
         shipping_amount = 70.0
         # this will cnt the number of different product in the cart so that we add delivery charge on each different product ...
@@ -276,7 +289,7 @@ def show_cart(request):
         totalamount = 0.0
         cart_product = [p for p in Cart.objects.all() if p.user ==
                         request.user]
-        print(cart_product)
+        # print(cart_product)
 
         # shipping amount we directly add in the template ...
         if cart_product:
@@ -848,10 +861,41 @@ def update_profile(request, id):
 # by default all the values which extracted from the url is in form of string so for safety we have to first convert it into integer then do our further work ...
 
 
+'''
+
 @login_required
 def delete_profile(request, id):
+    # if we want we can use directly get method because there is only one customer which satisfy this condition ....
     customer = Customer.objects.filter(user=request.user, id=id)[0]
     OrderPlaced.objects.filter(user=request.user, customer=customer).delete
     Customer.objects.filter(user=request.user, id=id).delete()
     messages.warning(request, 'Your Profile is deleted succesfully ! ')
     return HttpResponseRedirect('/address/')
+
+'''
+
+# modified version of delete profile for user ....
+# if a Customer has active order which is associated with its profile then that profile cant be deleted untill the order deliverd or cancelled ...
+
+
+@login_required
+def delete_profile(request, id):
+    customer = Customer.objects.filter(user=request.user, id=id).first()
+
+    if customer:
+        active_orders = OrderPlaced.objects.filter(
+            user=request.user, customer=customer).exclude(status__in=['Delivered', 'Cancel'])
+
+        if active_orders.exists():
+            messages.error(
+                request, 'You have active orders associated with this profile, So this Profile cannot be deleted !!')
+            return HttpResponseRedirect('/address/')
+        else:
+            OrderPlaced.objects.filter(
+                user=request.user, customer=customer).delete()
+            customer.delete()
+            messages.warning(request, 'Your Profile is deleted successfully!')
+            return HttpResponseRedirect('/address/')
+    else:
+        messages.error(request, 'Profile not found.')
+        return HttpResponseRedirect('/address/')

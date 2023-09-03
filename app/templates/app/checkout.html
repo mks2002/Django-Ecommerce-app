@@ -91,21 +91,21 @@
     </div>
 
     <div class="col-sm-4 ">
-      <div class="card border-primary" style="border-width: 3px; border-radius: 10px;">
+      <div class="card border-primary  mb-2" style="border-width: 3px; border-radius: 10px;">
 
         {% if addresscnt == 0 %}
         <h5 class="m-4 fw-bold">Please complete your profile by adding address Otherwise You cant able to place this
           order !</h4>
           <span class="m-4 mt-0"> <a href="{% url 'profile' %}?prevpage=checkout&page={{prevpage}}"
               class=" btn btn-info fw-bold p-2"> Complete Profile</a></span>
-          {% else %}
+        {% else %}
 
-          <div class="card-body">
+         <div class="card-body">
 
             <h4>Select Shipping Address</h4>
             <hr />
 
-            {% if flag == False %}
+          {% if flag == False %}
 
             <form action="/directpayment" method="get" id="myform">
 
@@ -139,7 +139,7 @@
             </form>
 
 
-            {% else %}
+          {% else %}
             <!-- this is for submiting the payment form to save the data into order table.... -->
 
             <form action="/paymentdone" id="myform">
@@ -171,14 +171,13 @@
 
             </form>
 
-            {% endif %}
-
-
-          </div>
-
           {% endif %}
 
 
+         </div>
+         <a href="{% url 'profile' %}?prevpage=checkout&page={{prevpage}}"
+         class=" btn btn-info fw-bold p-2"> Add another address</a>
+        {% endif %}
 
       </div>
     </div>

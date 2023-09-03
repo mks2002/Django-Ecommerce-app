@@ -46,7 +46,8 @@
             <img src="{{ op.product.product_image.url }}" alt="" srcset="" class="img-fluid" height="90%" width="150"
               style="border-radius: 8px;" />
           </div>
-          <div class="col-sm-7 d-flex align-items-center">
+
+          <div class="col-sm-3 d-flex  border-end">
             <div>
               <p class="fw-bold" style="color: #007bff;">Product: {{ op.product.title }}</p>
               <p class="mb-1 fw-bold">Quantity: {{ op.quantity }}</p>
@@ -54,13 +55,27 @@
               <p class="fw-bold my-0">deliver : 70</p>
               <!-- we can use any of these 2 methods to get the total cost -->
               <!-- <p class="fw-bold">Total amount: {{ op.total_cost }}</p> -->
-              <p class="fw-bold">Total amount: {{ op.product.discounted_price|multiply:op.quantity |add:70
-                |floatformat:1 }}</p>
+              <p class="fw-bold">Total amount: {{ op.product.discounted_price |multiply:op.quantity |add:70 |floatformat:1 }}</p>
             </div>
           </div>
+
+          <div class="col-sm-4 d-flex  border-end">
+            <div>
+              <p class="fw-bold" style="color: #007bff;">Customer details </p>
+              <p class="mb-1 fw-bold"> Name : {{ op.customer.name }} </p>
+              <p class="mb-1 fw-bold">Addres : {{ op.customer.locality }}, {{op.customer.city}}, {{op.customer.state}} .</p>
+              <p class="mb-1 fw-bold">Zipcode : {{op.customer.zipcode}}</p>
+            </div>
+          </div>
+
           <div class="col-sm-3 d-flex align-items-center justify-content-center">
             <div>
               <p class="fw-bold" style="color: #007bff;">Order Status: {{ op.status }}</p>
+              {% if op.status == 'Pending' %}
+              <div class="text-center">
+                <i class=" fa-regular fa-clock text-primary" style="font-size: 54px; vertical-align: middle;"></i>
+              </div>
+              {% endif %}
               {% if op.status == 'Accepted' %}
               <div class="progress" style="height: 30px;">
                 <div class="progress-bar bg-primary" role="progressbar" style="width: 20%; border-radius: 8px;"
@@ -83,6 +98,11 @@
               <div class="progress" style="height: 30px;">
                 <div class="progress-bar bg-success" role="progressbar" style="width: 100%; border-radius: 8px;"
                   aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              {% endif %}
+              {% if op.status == 'Cancel' %}
+              <div class="text-center">
+                <i class="fa-solid fa-ban text-danger" style="font-size: 54px; vertical-align: middle;"></i>
               </div>
               {% endif %}
             </div>

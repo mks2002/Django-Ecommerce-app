@@ -59,7 +59,7 @@
 <div class="container-fluid" style="margin-top: 10px;">
   <div class="row">
     <div class="col-lg-12 bg-primary text-white py-4 text-center"
-      style="border-top: 4px solid #dc3545; border-bottom: 4px solid #dc3545; background-image: linear-gradient(to right, #007bff, #007bff 40%, #17a2b8);">
+      style="border-top: 4px solid #dc3545; border-bottom: 4px solid #dc3545; background-image: linear-gradient(to right, #007bff, #007bff 40%, #17a2b8); background-color: rgba(0, 123, 255, 0.9);">
       <h2 class="display-4 mb-2 fw-bold" style="font-size: 44px;">SALE IS LIVE NOW</h2>
       <p class="lead mb-4 " style="font-size: 27px; font-weight:700;">Get 5% Instant Discount on Axis Bank Credit and
         Debit Card</p>
@@ -92,9 +92,9 @@
         </a>
         <hr class="container my-0">
         <div class="card-body">
-          <h5 class="card-title fw-bold">{{lowprod.title}}</h5>
+          <h5 class="card-title  fw-bold">{{lowprod.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold">
+            <p class="fw-bold text-primary">
               Rs. {{lowprod.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{lowprod.selling_price}}</small>
             </p>
@@ -126,7 +126,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{highprod.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold">
+            <p class="fw-bold text-primary">
               Rs. {{highprod.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{highprod.selling_price}}</small>
             </p>
@@ -199,8 +199,8 @@
         <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title fw-bold">{{b.title}}</h5>
-          <div class="card-text">
-            <p class="fw-bold">
+          <div class="card-text ">
+            <p class="fw-bold text-primary">
               Rs. {{b.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{b.selling_price}}</small>
             </p>
@@ -233,7 +233,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{tp.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold">
+            <p class="fw-bold text-primary">
               Rs. {{tp.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{tp.selling_price}}</small>
             </p>
@@ -264,7 +264,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{item.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold">
+            <p class="fw-bold text-primary">
               Rs. {{item.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{item.selling_price}}</small>
             </p>

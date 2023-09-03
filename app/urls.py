@@ -176,8 +176,7 @@ urlpatterns = [
 
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 # in the password reset url when the form for email come if user enter that email which he use during registration then only the reset password link generate and send to his email if enters any other email then it is not working.....

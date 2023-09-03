@@ -129,13 +129,15 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="profileDropdown">
                 <li>
-                  <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                  <a class="dropdown-item {% if '/profile/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                    href="{% url 'profile' %}">Profile</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'orders' %}">Orders</a>
+                  <a class="dropdown-item {% if '/orders/' in request.path %} bg-primary text-white fw-bold {% endif %}"
+                    href="{% url 'orders' %}">Orders</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="{% url 'passwordchange' %}">Change Password</a>
+                  <a class="dropdown-item {% if '/passwordchange/' in request.path %} bg-primary text-white fw-bold {% endif %}" href="{% url 'passwordchange' %}">Change Password</a>
                 </li>
                 <li>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -147,7 +149,15 @@
               <a href="{% url 'showcart' %}" class="nav-link text-white d-flex align-items-center">
                 <span class="me-1">Cart</span>
                 <div class="cart d-inline-block">
-                  <span id="navcnt" class="count">{{totalitem}}</span>
+
+                  <!-- for this 2 page we access the cart count value using context processors and for other pages also we can access from it , but for them we already pass this value as a key from view function .... -->
+                  {% if request.path == '/passwordchange/' or request.path == '/passwordchangedone/' or request.path == '/about/' %}
+                  <span id="navcnt" class="count">{{ total_items_in_cart }}</span>
+                  {% else %}
+                  <span id="navcnt" class="count">{{ totalitem }}</span>
+                  {% endif %}
+
+                  <!-- material-icons this is my own custome css class .... -->
                   <i class="material-icons fa-solid fa-cart-shopping text-white"></i>
                 </div>
               </a>
