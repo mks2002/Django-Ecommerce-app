@@ -163,6 +163,7 @@ class CustomerProfileForm(forms.ModelForm):
             raise forms.ValidationError("Zip code must be exactly 6 digits.")
 
 
+# this is for adding comment for users, who purchased a particular product from our site ...
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment

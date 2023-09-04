@@ -13,6 +13,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from django.contrib import messages
 from pathlib import Path
 
+
+# this settings we have to do , so that we can properly use force_str without any disturbance , if we dont use this then are many problems which we have to face  ...
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -142,7 +148,9 @@ LOGIN_REDIRECT_URL = '/profile/'
 # this first setting is for sending the password update link in the console after that we try to send this on the email....
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# SESSION_ENGINE = "django.contrib.sessions.backends.db"
+# this is the setting which destroy all session on the browser close ...
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
 # here we change the error name by danger so that it become bootstrap class also...
@@ -160,6 +168,5 @@ MESSAGE_TAGS = {
 # EMAIL_HOST_USER = 'Your host email'
 # EMAIL_HOST_PASSWORD = 'your host email password '
 
-# this is the setting which destroy all session on the browser close ...
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+

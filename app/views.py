@@ -2,6 +2,8 @@ import re
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
+
+from django.contrib.auth.models import User
 from .models import Customer, Product, Cart, OrderPlaced, Comment
 from .forms import CustomerRegistrationForm, CustomerProfileForm, CommentForm
 
@@ -23,6 +25,18 @@ from django.urls import reverse
 
 # this is for getting current timestamp ....
 from django.utils import timezone
+
+
+# this is for sending activation email during signup ....
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from .utils import TokenGenerator, generate_token
+from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.core.mail import EmailMessage
+from django.conf import settings
+
+# this we have to import for using linebreak in the message which we pass in the templates ....
+from django.utils.safestring import mark_safe
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -751,11 +765,47 @@ class CustomerRegistrationView(View):
     def post(self, request):
         form = CustomerRegistrationForm(request.POST)
         if form.is_valid():
-            messages.success(
-                request, 'Congratulations!! Registered Successfully.')
-            form.save()
-            form = CustomerRegistrationForm()
+            email = form.cleaned_data['email']
+            if User.objects.filter(email=email).exists():
+                messages.warning(
+                    request, 'this email is already used, select another !')
+            else:
+                messages.success(request, mark_safe(
+                    'Congratulations!! Registered Successfully.<br/>An email is sent to your account for activation .'))
+                # Create a user instance but don't save it to the database yet.
+                user = form.save(commit=False)
+                # Set the is_active attribute to False.
+                user.is_active = False
+                # Save the user with is_active set to False.
+                user.save()
+                form = CustomerRegistrationForm()
+                email_subject = 'Activate your account !!'
+                message = render_to_string('app/activate.html', {
+                    'user': user,
+                    'domain': '127.0.0.1:8000',
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': generate_token.make_token(user),
+                })
+                email_message = EmailMessage(
+                    email_subject, message, settings.EMAIL_HOST_USER, [email])
+                email_message.send()
         return render(request, 'app/customerregistration.html', {'form': form})
+
+
+# this is for activating the account ...
+class ActivateAccountView(View):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except Exception as identifier:
+            user = None
+        if user is not None and generate_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            messages.info(request, mark_safe('Account Activated Successfully !!<br/>Now you can login into your account . '))
+            return redirect('/accounts/login/')
+        return render(request, 'app/activatefail.html')
 
 
 # this is for address page.....
