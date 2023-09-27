@@ -38,14 +38,18 @@ from django.conf import settings
 # this we have to import for using linebreak in the message which we pass in the templates ....
 from django.utils.safestring import mark_safe
 
+# this are related to custom login view function ......
+from django.contrib.auth import authenticate, login
+from .forms import LoginForm
+
 
 @method_decorator(never_cache, name='dispatch')
 class ProductView(View):
     def get(self, request):
         totalitem = 0
-        topwears = Product.objects.filter(category='TW')
-        bottomwears = Product.objects.filter(category='BW')
-        grocery = Product.objects.filter(category='GR')
+        topwears = Product.objects.filter(category='TW').order_by('?')
+        bottomwears = Product.objects.filter(category='BW').order_by('?')
+        grocery = Product.objects.filter(category='GR').order_by('?')
 
         #   minimum price product from each category ....
 
@@ -181,8 +185,8 @@ class ProductDetailView(View):
 
     def get_common_data(self, request, product):
         totalitem = 0
-        comments = Comment.objects.filter(
-            product=product).order_by('-timestamp')
+        comments = Comment.objects.filter( product=product).order_by('-timestamp')
+        # if there are more then 5 comments then we only show the most new 5 comments ....
         if len(comments) > 5:
             comments = comments[:5]
         item_already_in_cart = False
@@ -201,7 +205,6 @@ class ProductDetailView(View):
         fm = self.comment_form_class()
         if request.user.is_authenticated:
             messages.info(request, 'here you can add your comment !')
-
         return render(
             request,
             self.template_name,
@@ -229,21 +232,18 @@ class ProductDetailView(View):
             # if OrderPlaced.objects.filter(product=product,user=request.user).exists():
             if OrderPlaced.objects.filter(Q(product=product) & Q(user=usr)).exists():
                 if Comment.objects.filter(user=usr, product=product, description=comment).exists():
-                    messages.warning(
-                        request, 'You already made this same comment before!')
+                    messages.warning( request, 'You already made this same comment before!')
                 else:
-                    result = Comment(user=usr, product=product,
-                                     description=comment, timestamp=timestamp)
+                    result = Comment(user=usr, product=product, description=comment, timestamp=timestamp)
                     result.save()
                     form = self.comment_form_class()
-                    messages.success(
-                        request, 'Your comment is added successfully!')
+                    messages.success( request, 'Your comment is added successfully!')
                     # so that the values are updated afer the form is submiting ...
                     totalitem, comments, item_already_in_cart = self.get_common_data(
                         request, product)
             else:
-                messages.warning(
-                    request, 'You need to purchase this product to make a comment!')
+                # if this product is not purchased by that user then he cant make comment ...-
+                messages.warning( request, 'You need to purchase this product to make a comment!')
         else:
             # messages.error(request, 'Something error occurred!')
             pass
@@ -497,8 +497,13 @@ def checkout(request):
                 pass
 
     return render(request, 'app/checkout.html',
-                  {'address': address, 'cart_items': cart_items,
-                   'totalcost': totalamount, 'totalitem': totalitem, 'flag': flag, 'number': number, 'addresscnt': addresscnt, 'prodcnt': Prodcnt, 'prevpage': prevpage},
+                  {'address': address,
+                   'cart_items': cart_items,
+                   'totalcost': totalamount,
+                   'totalitem': totalitem,
+                   'flag': flag, 'number': number,
+                   'addresscnt': addresscnt, 'prodcnt': Prodcnt,
+                   'prevpage': prevpage},
                   )
 # we use this addresscnt variable so that if it is 0 then we have to prevent to show the payment button , and user need to first complete his profile by adding address then we show the payment option to him ....
 
@@ -548,7 +553,7 @@ def orders(request):
         totalitem = len(Cart.objects.filter(user=request.user))
     op = OrderPlaced.objects.filter(user=request.user)
     uname = request.user.username
-    return render(request, 'app/orders.html', {'order_placed': op, 'uname': uname, 'totalitem': totalitem})
+    return render(request, 'app/orders.html', {'order_placed': op,  'uname': uname, 'totalitem': totalitem})
 
 
 # _________________________________________________________________________________________________________
@@ -584,7 +589,7 @@ def mobile(request, data=None):
             category='M').filter(discounted_price__gt=10000)
     return render(
         request, 'app/Productpage/mobile.html', {'mobiles': mobiles,
-                                                 'totalitem': totalitem}
+                    'totalitem': totalitem}
     )
 
 
@@ -803,10 +808,10 @@ class ActivateAccountView(View):
         if user is not None and generate_token.check_token(user, token):
             user.is_active = True
             user.save()
-            messages.info(request, mark_safe('Account Activated Successfully !!<br/>Now you can login into your account . '))
+            messages.info(request, mark_safe(
+                'Account Activated Successfully !!<br/>Now you can login into your account . '))
             return redirect('/accounts/login/')
         return render(request, 'app/activatefail.html')
-
 
 # this is for address page.....
 # we send this active in the template to add dynamic class in the link of that page we can do the same using the request.path method in the class list in profile page we do this using request.path method in template.....

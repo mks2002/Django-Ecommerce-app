@@ -56,7 +56,7 @@
 
                 {% for product in laptop %}
                 <div class="col-md-4 mb-4">
-                    <div class="card border-primary custom-card " style="border-radius: 5px; border-width: 3px;">
+                    <div class="card border-primary custom-card zoom-card" style="border-radius: 5px; border-width: 3px;">
                         <a href="{% url 'product-detail' product.id %}" class="btn">
                             <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top"
                                 height="300">

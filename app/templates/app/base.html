@@ -24,6 +24,7 @@
   <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
   <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
   <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
 </head>
 
 <body>
@@ -120,7 +121,7 @@
         <div>
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-            {% if request.user.is_authenticated %}
+          {% if request.user.is_authenticated %}
 
             <li class="nav-item dropdown mx-2">
               <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button"
@@ -150,7 +151,7 @@
                 <span class="me-1">Cart</span>
                 <div class="cart d-inline-block">
 
-                  <!-- for this 2 page we access the cart count value using context processors and for other pages also we can access from it , but for them we already pass this value as a key from view function .... -->
+                  <!-- for this 3 page we access the cart count value using context processors and for other pages also we can access from it , but for them we already pass this value as a key from view function .... -->
                   {% if request.path == '/passwordchange/' or request.path == '/passwordchangedone/' or request.path == '/about/' %}
                   <span id="navcnt" class="count">{{ total_items_in_cart }}</span>
                   {% else %}
@@ -163,7 +164,7 @@
               </a>
             </li>
 
-            {% else %}
+          {% else %}
 
             <li class="nav-item mx-2">
               <a href="{% url 'login' %}" class="nav-link text-white">Login</a>
@@ -172,7 +173,8 @@
             <li class="nav-item mx-2">
               <a href="{% url 'customerregistration' %}" class="nav-link text-white">Registration</a>
             </li>
-            {% endif %}
+            
+          {% endif %}
           </ul>
         </div>
 
@@ -262,6 +264,19 @@
 
   <!-- this javascript is for frontend based search ... -->
   <script>
+
+    // this is image zoom on mouse hover on them ....
+    const cardImages = document.querySelectorAll('.zoom-card img');
+    cardImages.forEach((image) => {
+        image.addEventListener('mouseover', () => {
+            image.style.transform = 'scale(1.04)'; 
+            image.style.transition = 'transform 0.02s';
+        });
+
+        image.addEventListener('mouseout', () => {
+            image.style.transform = 'scale(1)';
+        });
+    });
 
     // The closest() method traverses up the DOM tree, starting from the current element (element), and searches for the nearest ancestor element that matches the specified selector (in this case, .card).....
 

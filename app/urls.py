@@ -105,6 +105,7 @@ urlpatterns = [
 
     # here we directly use the url for the login view we dont crate any other view for this authentication....
     # if we use the nextpage option directly here in the url then we can override the value of LOGIN_REDIRECT_URL = '/profile/' which is defined in the settings.py file....
+    
     path(
         'accounts/login/',
         auth_views.LoginView.as_view(
@@ -112,6 +113,10 @@ urlpatterns = [
         ),
         name='login',
     ),
+    
+    # this is for our custom login view ....
+    # path('accounts/login/', views.custom_login, name='login'),
+
 
     # for logout also we dont have to create any view we directly use the built in logout view of django....
     # here we have to pass this nextpage option to say this after logout where it should go otherwise by default it sends to admin logout page....

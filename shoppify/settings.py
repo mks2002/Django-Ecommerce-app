@@ -146,7 +146,7 @@ LOGIN_REDIRECT_URL = '/profile/'
 
 
 # this first setting is for sending the password update link in the console after that we try to send this on the email....
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # this is the setting which destroy all session on the browser close ...
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
@@ -168,5 +168,10 @@ MESSAGE_TAGS = {
 # EMAIL_HOST_USER = 'Your host email'
 # EMAIL_HOST_PASSWORD = 'your host email password '
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sarkarmayuk2002@gmail.com'
+EMAIL_HOST_PASSWORD = 'wzretceycroxlbmn'
 

@@ -86,15 +86,15 @@
 
     {% for lowprod in lowpriceprod %}
     <div class="item">
-      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+      <div class="card border-primary zoom-card " style="border-radius: 5px; border-width: 3px;">
         <a href="{% url 'product-detail' lowprod.id %}" class="btn">
-          <img src="{{lowprod.product_image.url}}" alt="" height="200" class="card-img-top">
+            <img src="{{lowprod.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
         <hr class="container my-0">
         <div class="card-body">
           <h5 class="card-title  fw-bold">{{lowprod.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold text-primary">
+            <p class="fw-bold text-success">
               Rs. {{lowprod.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{lowprod.selling_price}}</small>
             </p>
@@ -116,9 +116,10 @@
 
   <!-- Slider 2 -->
   <div class="owl-carousel" id="slider2">
+
     {% for highprod in highpriceprod %}
     <div class="item">
-      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+      <div class="card border-primary zoom-card " style="border-radius: 5px; border-width: 3px;">
         <a href="{% url 'product-detail' highprod.id %}" class="btn">
           <img src="{{highprod.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
@@ -126,7 +127,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{highprod.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold text-primary">
+            <p class="fw-bold text-success">
               Rs. {{highprod.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{highprod.selling_price}}</small>
             </p>
@@ -192,7 +193,7 @@
   <div class="owl-carousel" id="slider3">
     {% for b in bottomwears %}
     <div class="item">
-      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+      <div class="card border-primary zoom-card " style="border-radius: 5px; border-width: 3px;">
         <a href="{% url 'product-detail' b.id %}" class="btn">
           <img src="{{b.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
@@ -200,7 +201,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{b.title}}</h5>
           <div class="card-text ">
-            <p class="fw-bold text-primary">
+            <p class="fw-bold text-success">
               Rs. {{b.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{b.selling_price}}</small>
             </p>
@@ -225,7 +226,7 @@
   <div class="owl-carousel" id="slider4">
     {% for tp in topwears %}
     <div class="item">
-      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+      <div class="card border-primary zoom-card " style="border-radius: 5px; border-width: 3px;">
         <a href="{% url 'product-detail' tp.id %}" class="btn">
           <img src="{{tp.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
@@ -233,7 +234,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{tp.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold text-primary">
+            <p class="fw-bold text-success">
               Rs. {{tp.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{tp.selling_price}}</small>
             </p>
@@ -256,7 +257,7 @@
   <div class="owl-carousel" id="slider5">
     {% for item in grocery %}
     <div class="item">
-      <div class="card border-primary " style="border-radius: 5px; border-width: 3px;">
+      <div class="card border-primary zoom-card " style="border-radius: 5px; border-width: 3px;">
         <a href="{% url 'product-detail' item.id %}" class="btn">
           <img src="{{item.product_image.url}}" alt="" height="200" class="card-img-top">
         </a>
@@ -264,7 +265,7 @@
         <div class="card-body">
           <h5 class="card-title fw-bold">{{item.title}}</h5>
           <div class="card-text">
-            <p class="fw-bold text-primary">
+            <p class="fw-bold text-success">
               Rs. {{item.discounted_price}}
               <small class="fw-light text-decoration-line-through">{{item.selling_price}}</small>
             </p>

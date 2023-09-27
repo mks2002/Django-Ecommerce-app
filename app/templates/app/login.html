@@ -28,14 +28,15 @@
         </div>
         {% endfor %}
 
-        <input type="submit" class="btn btn-primary mt-4" value="Login">
         <br>
 
         {% if form.non_field_errors %}
         {% for error in form.non_field_errors %}
-        <p class="alert alert-danger my-3 fw-bold">{{error}}</p>
+        <p class="text text-danger my-0 fw-bold">{{error}}</p>
         {% endfor %}
-        {% endif %}
+        {% endif %} 
+        <input type="submit" class="btn btn-primary mt-4" value="Login">
+        <br>
         <div class="text-center fw-bold"><small><a href="{% url 'password_reset' %}">Forgot Password ?</a></small>
         </div>
 
