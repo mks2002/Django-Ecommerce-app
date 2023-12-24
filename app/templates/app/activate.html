@@ -1,0 +1,12 @@
+{% autoescape off %}
+Click to activate http://{{domain}}{% url 'activate' uidb64=uid token=token %}
+{% endautoescape %}
+
+
+{% comment %}  
+
+1. this page is rendered as message into the users email and when user Clicks on it he redirects to the activation url and his Account activated ... 
+
+2. here if we use simple html comment then that is also visible in the users mail , so for that reason here we need to use only the django html comment ...
+
+{% endcomment %}

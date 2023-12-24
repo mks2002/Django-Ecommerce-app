@@ -1,0 +1,97 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %} Grocerys {% endblock title %}
+
+
+
+{% block searchbar %}
+<!-- this is for the search bar .... -->
+<form class="d-flex" onsubmit="return handleFormSubmit()">
+    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchTxt" />
+    <button class="btn btn-warning" type="submit">S</button>
+</form>
+
+{% endblock searchbar %}
+
+
+
+{% block main-content %}
+<div class="container my-5">
+    <div class="row">
+
+        <div class="col-sm-3">
+
+            <div class="list-group">
+                <a href="{% url 'grocery' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">All Items</a>
+
+                <a href="{% url 'grocerydata' 'Veges'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/Veges' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">Vegetables</a>
+
+                <a href="{% url 'grocerydata' 'Fruites'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/Fruites' %} bg-primary text-white fw-bold {% endif %}">Fruits</a>
+
+                <a href="{% url 'grocerydata' 'Grains'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/Grains' %} bg-primary text-white fw-bold {% endif %}">Grains</a>
+
+                <a href="{% url 'grocerydata' 'snacks'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/snacks' %} bg-primary text-white fw-bold {% endif %}">Snacks</a>
+
+                <a href="{% url 'grocerydata' 'below'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/below' %} bg-primary text-white fw-bold {% endif %}">Below
+                    1000 Rs</a>
+                <a href="{% url 'grocerydata' 'above'  %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/grocery/above' %} bg-primary text-white fw-bold {% endif %}">Above
+                    1000 Rs</a>
+            </div>
+
+            <div class="list-group my-5 pt-5">
+                <a href="{% url 'grocery' %}"
+                    class="list-group-item list-group-item-action {% if request.path == '/rated/' %} bg-primary text-white fw-bold {% endif %}"
+                    aria-current="true">Most Rated Products.</a>
+            </div>
+
+        </div>
+
+
+        <div class="col-sm-9">
+
+            <!-- this div is used if nothing matches with search result then to show the not found message ... -->
+            <div id="searchResults"></div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="mylist">
+
+                {% for product in grocery %}
+                <div class="col-md-4 mb-4">
+                    <div class="card border-primary custom-card zoom-card" style="border-radius: 5px; border-width: 3px;">
+                        <a href="{% url 'product-detail' product.id %}" class="btn">
+                            <img src="{{product.product_image.url}}" alt="{{product.title}}" class="card-img-top"
+                                height="300">
+                        </a>
+                        <div class="card-body noteCard">
+                            <h5 class="card-title fw-bold">{{product.title}}</h5>
+                            <div class="card-text">
+                                <p class="fw-bold">
+                                    Rs. {{product.discounted_price}}
+                                    <small class="fw-light text-decoration-line-through">{{product.selling_price}}</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                    <h2 class="text-center p3 ms-4 my-5 w-100">
+                        Sorry ! No corresponding items are available .<br/>
+                        Invalid URL !
+                    </h2>
+                 
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock main-content %}

@@ -1,0 +1,136 @@
+{% extends 'app/base.html' %}
+{% load static %}
+<!-- this is we load to use our custom multiply template filter .. -->
+{% load firstcustomFilter %}
+{% block title %}Cart{% endblock title %}
+
+
+{% block main-content %}
+<div class="container my-5">
+
+  {% comment %} Below Code will be used by add_to_cart view {% endcomment %}
+  {% if messages %}
+  {% for message in messages %}
+
+  <div class="alert  {% if message.tags %} alert-{{message.tags}}{% endif %} alert-dismissible fade show" role="alert">
+    <strong class="ms-4" id="msgbox">{{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+
+  {% endfor %}
+  {% endif %}
+
+  <div class="row">
+
+    <h1 class="text-center mb-3">Shopping Cart</h1>
+
+    <div class="col-sm-8">
+
+      <div class="card border-primary" style="border-width: 3px;">
+        <div class="card-body">
+          <h3>Cart Items</h3>
+
+          {% for cart in carts %}
+
+          <hr>
+
+          <div class="row">
+
+            <div class="col-sm-3 text-center align-self-center">
+              <img src="{{cart.product.product_image.url}}" alt="" srcset="" class="img-fluid img-thumbnail shadow-sm"
+                style="height: 150px; width: 170px; border-radius: 8px; border: 2px solid #007bff;">
+            </div>
+
+            <div class="col-sm-9">
+              <div>
+                <h5>{{cart.product.title}} ({{cart.product.brand}})</h5>
+                <p class="mb-2 text-muted small">{{cart.product.description}}</p>
+
+                <!-- the below 2 divs are used for ajax request response , to change the page content without refreshing the page .. -->
+                <div class="my-3">
+                  <label for="quantity">Quantity:</label>
+
+                  <a class="minus-cart btn" pid="{{cart.product.id}}"><i class="fas fa-minus-square fa-lg"></i></a>
+
+                  <span id="quantity">{{cart.quantity}}</span>
+
+                  <a class="plus-cart btn" pid="{{cart.product.id}}"><i class="fas fa-plus-square fa-lg"></i></a>
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+
+                  <a class="btn btn-sm btn-danger mr-3 remove-cart" pid="{{cart.product.id}}"
+                    style="background-color: #dc3545; color: #fff; border-color: #dc3545;"
+                    onmouseover="this.style.backgroundColor='transparent'; this.style.color='#000'; this.style.borderColor='#000';"
+                    onmouseout="this.style.backgroundColor='#dc3545'; this.style.color='#fff'; this.style.borderColor='#dc3545';">Remove
+                    item </a>
+
+                  <p class="mb-0"><strong>Rs. {{cart.product.discounted_price}}</strong></p>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          {% endfor %}
+
+        </div>
+      </div>
+
+      <h5 class="text-center fw-bold my-1 mt-3">We take delivery charge Rs.70 on each different product.</h4>
+
+    </div>
+
+    <div class="col-sm-4">
+      <div class="card border-primary">
+        <div class="card-body">
+          <h3>The Total Amount is</h3>
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+              Amount<span>Rs. <span class="fw-bold" id="amount">{{amount|floatformat:2}}</span> </span></li>
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+              Shipping<span class="fw-bold">Rs. (70 x <span id="prodcnt"> {{prodcnt}} </span> )</span></li>
+            <hr>
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+              <div>
+                <strong>Total</strong> <small>(including delivery)</small>
+              </div>
+              <span><strong>Rs. </strong><strong id="totalamount"> {{totalamount |floatformat:2}}</strong></span>
+            </li>
+          </ul>
+
+          <!-- this is the payment page url ... -->
+          <div class="d-grid">
+            <a href="/checkout/?page=Cardpage" class="btn fw-bold" id="paymentbtn"
+              style="background-color: #007bff; border-color: #007bff;">Place Order</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-sm-8">
+      <div class="card border-primary rounded shadow-lg">
+        <div class="card-body">
+          <h5 class="card-title text-center mb-4" style="font-size: 24px;">We accept</h5>
+          <div class="text-center">
+            <img src="{% static 'app/images/payment.png' %}" alt="" class="img-fluid rounded"
+              style="width: 60%; height: 70%; border: 2px solid #007BFF;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock main-content %}
