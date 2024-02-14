@@ -12,7 +12,7 @@ Welcome to Shoppify, an ecommerce application built with Python, Django, Ajax, a
 - [Setup](#setup)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
+
 
 ## Introduction
 
