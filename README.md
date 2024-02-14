@@ -31,7 +31,7 @@ Shoppify is a robust ecommerce application developed using Django framework. It 
 
 To set up the Shoppify project locally, follow these steps:
 
-1. Clone the repository:
+1. First fork the repository in your github account and then Clone the repository:
 
 ```bash
 git clone https://github.com/your-username/shoppify.git
