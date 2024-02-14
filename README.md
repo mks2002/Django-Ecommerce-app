@@ -1,4 +1,6 @@
-```markdown
+
+
+
 # Shoppify Ecommerce Application
 
 Welcome to Shoppify, an ecommerce application built with Python, Django, Ajax, and Bootstrap.
